@@ -1,23 +1,18 @@
-import { Lock, Users, Home, Settings } from 'lucide-react';
+import { Lock, Users, Pencil, Building } from 'lucide-react';
 import SidebarLink from '../header/sidebar-link';
 import Image from 'next/image';
 import { SidebarUserButton } from './sidebar-user-button';
 
 const sidebarItems = [
   {
-    label: 'Home',
-    icon: <Home className="w-4 h-4" />,
-    href: '/home',
+    label: 'Counter',
+    icon: <Pencil className="w-4 h-4" />,
+    href: '/counter',
   },
   {
-    label: 'People',
+    label: 'Users',
     icon: <Users className="w-4 h-4" />,
-    href: '/people',
-  },
-  {
-    label: 'Settings',
-    icon: <Settings className="w-4 h-4" />,
-    href: '/settings',
+    href: '/users',
   },
 ];
 
@@ -35,7 +30,7 @@ export function VenueSidebar() {
             className="rounded object-cover"
           />
           <div className="flex flex-col">
-            <p>Shangri-La</p>
+            <p className="font-medium">Shangri-La</p>
             <p className="text-xs text-muted-foreground flex items-center gap-1">
               <Lock className="w-3 h-3" /> Private
             </p>

@@ -5,16 +5,16 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  "cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-all duration-200",
+  "cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-all duration-300",
   {
     variants: {
       variant: {
         default:
-          'bg-cyan-600 border-cyan-700 text-primary-foreground hover:bg-cyan-700/90 border-b-4 active:border-b-0 font-semibold',
+          'border-cyan-700 border border-b-2 active:border-b-0 hover:bg-cyan-100 text-cyan-500 dark:text-muted-foreground font-normal',
         secondary:
-          'border-slate-200 border-2 border-b-4 active:border-b-0 hover:bg-slate-100 text-slate-500',
+          'border-slate-200 border-b-2 active:border-b-0 hover:bg-slate-100 text-slate-500 dark:text-muted-foreground font-normal',
         destructive:
-          'bg-red-600 border-red-700 text-primary-foreground hover:bg-red-600/90 border-b-4 active:border-b-0',
+          'border-red-700 border-b-2 active:border-b-0 hover:bg-red-700 dark:text-muted-foreground font-normal hover:text-white',
         outline:
           'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         ghost:

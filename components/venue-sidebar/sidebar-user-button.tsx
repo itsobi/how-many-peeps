@@ -9,9 +9,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { SignOutButton, useUser } from '@clerk/nextjs';
-import { User, ChevronsUpDown, LogOut } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
+import { User, ChevronsUpDown } from 'lucide-react';
 import Image from 'next/image';
+import { SignOutButton } from '../sign-out-button';
 
 export function SidebarUserButton() {
   const { isLoaded, user } = useUser();
@@ -31,6 +32,7 @@ export function SidebarUserButton() {
       </div>
     );
   }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -47,7 +49,7 @@ export function SidebarUserButton() {
             ) : (
               <User className="w-4 h-4" />
             )}
-            <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2" />
+            <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white" />
           </div>
           <div className="flex flex-col">
             <p className="text-xs">{user?.fullName}</p>
@@ -58,16 +60,13 @@ export function SidebarUserButton() {
           <ChevronsUpDown className="ml-auto w-4 h-4" />
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuContent className="w-80 lg:w-56">
+        <DropdownMenuLabel className="text-muted-foreground">
+          My Account
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <SignOutButton>
-            <span className="flex items-center gap-2">
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </span>
-          </SignOutButton>
+          <SignOutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
