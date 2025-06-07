@@ -1,3 +1,4 @@
+import ConvexClientProvider from '@/components/convex-client-provider';
 import { Header } from '@/components/header/header';
 
 import { VenueSidebar } from '@/components/venue-sidebar/venue-sidebar';
@@ -15,7 +16,9 @@ export default function ProtectedLayout({
         <div className={`hidden lg:block border-r w-1/4`}>
           <VenueSidebar />
         </div>
-        <main className="w-full overflow-y-auto p-4">{children}</main>
+        <main className="w-full overflow-y-auto p-4">
+          <ConvexClientProvider>{children}</ConvexClientProvider>
+        </main>
       </div>
     </div>
   );

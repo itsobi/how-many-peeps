@@ -10,11 +10,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { useUser } from '@clerk/nextjs';
-import { User, ChevronsUpDown } from 'lucide-react';
+import { User, ChevronsUpDown, UserCog } from 'lucide-react';
 import Image from 'next/image';
 import { SignOutButton } from '../sign-out-button';
+import Link from 'next/link';
+import { Dispatch, SetStateAction } from 'react';
 
-export function SidebarUserButton() {
+export function SidebarUserButton({
+  setOpen,
+}: {
+  setOpen?: Dispatch<SetStateAction<boolean>>;
+}) {
   const { isLoaded, user } = useUser();
 
   if (!isLoaded) {
@@ -65,7 +71,13 @@ export function SidebarUserButton() {
           My Account
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem asChild onClick={() => setOpen?.(false)}>
+          <Link href="/settings/manage-account">
+            <UserCog />
+            Manage Account
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild onClick={() => setOpen?.(false)}>
           <SignOutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>

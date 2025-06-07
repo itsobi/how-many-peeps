@@ -1,18 +1,23 @@
-import { Lock, Users, Pencil, Building } from 'lucide-react';
+import { Lock, Users, Calculator, Settings } from 'lucide-react';
 import SidebarLink from '../header/sidebar-link';
 import Image from 'next/image';
 import { SidebarUserButton } from './sidebar-user-button';
 
-const sidebarItems = [
+const privateVenueItems = [
   {
     label: 'Counter',
-    icon: <Pencil className="w-4 h-4" />,
+    icon: <Calculator className="w-4 h-4" />,
     href: '/counter',
   },
   {
     label: 'Users',
     icon: <Users className="w-4 h-4" />,
     href: '/users',
+  },
+  {
+    label: 'Settings',
+    icon: <Settings className="w-4 h-4" />,
+    href: '/settings',
   },
 ];
 
@@ -40,7 +45,7 @@ export function VenueSidebar() {
 
       {/* Menu */}
       <div className="p-4 flex flex-col gap-2 text-sm">
-        {sidebarItems.map((item) => (
+        {privateVenueItems.map((item) => (
           <SidebarLink
             key={item.label}
             href={item.href}

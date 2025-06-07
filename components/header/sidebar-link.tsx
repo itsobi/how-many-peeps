@@ -14,7 +14,7 @@ interface Props {
 export default function SidebarLink({ href, icon, label, onClick }: Props) {
   const pathname = usePathname();
 
-  const isActive = pathname === href;
+  const isActive = pathname.includes(href);
   return (
     <Link
       onClick={onClick}

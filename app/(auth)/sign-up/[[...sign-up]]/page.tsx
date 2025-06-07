@@ -1,7 +1,6 @@
 import GoogleSignIn from '@/components/auth/google-sign-in';
 import { SignUpForm } from '@/components/auth/sign-up-form';
 import Logo from '@/components/logo';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export default function SignUpPage() {

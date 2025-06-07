@@ -8,7 +8,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Lock, Users, Pencil, Menu, Home, Building } from 'lucide-react';
+import {
+  Lock,
+  Users,
+  Menu,
+  Home,
+  Building,
+  Calculator,
+  Settings,
+} from 'lucide-react';
 import SidebarLink from '../header/sidebar-link';
 import Image from 'next/image';
 import { SidebarUserButton } from './sidebar-user-button';
@@ -23,8 +31,16 @@ const sidebarItems = [
     href: '/home',
   },
   {
+    label: 'Venues',
+    icon: <Building className="w-4 h-4" />,
+    href: '/venues',
+  },
+];
+
+const privateVenueItems = [
+  {
     label: 'Counter',
-    icon: <Pencil className="w-4 h-4" />,
+    icon: <Calculator className="w-4 h-4" />,
     href: '/counter',
   },
   {
@@ -33,9 +49,9 @@ const sidebarItems = [
     href: '/users',
   },
   {
-    label: 'Venues',
-    icon: <Building className="w-4 h-4" />,
-    href: '/venues',
+    label: 'Settings',
+    icon: <Settings className="w-4 h-4" />,
+    href: '/settings',
   },
 ];
 
@@ -93,8 +109,24 @@ export function MobileVenueSidebar() {
             ))}
           </div>
 
+          <div className="border-b" />
+
+          {/* Private Venue Menu */}
+          <div className="p-4 flex flex-col gap-2 text-sm">
+            <h4 className="text-xs text-muted-foreground">Venue Access</h4>
+            {privateVenueItems.map((item) => (
+              <SidebarLink
+                onClick={() => setOpen(false)}
+                key={item.label}
+                href={item.href}
+                icon={item.icon}
+                label={item.label}
+              />
+            ))}
+          </div>
+
           <div className="mt-auto pb-4">
-            <SidebarUserButton />
+            <SidebarUserButton setOpen={setOpen} />
           </div>
         </aside>
       </SheetContent>

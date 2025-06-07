@@ -8,7 +8,7 @@ export function SignOutButton({ className }: { className?: string }) {
   const { signOut } = useClerk();
 
   const handleSignOut = async () => {
-    const loadingToast = toast.loading('Signing you out...');
+    const loadingToast = toast.loading('Signing out...');
     try {
       await signOut({ redirectUrl: '/' });
     } catch (error) {

@@ -1,5 +1,7 @@
 import { Counter } from '@/components/counter/counter';
+import { Loading } from '@/components/loading';
 import { PageHeading } from '@/components/page-heading';
+import { Suspense } from 'react';
 
 export default function CounterPage() {
   return (
@@ -11,7 +13,9 @@ export default function CounterPage() {
 
       <div className="flex justify-center items-center">
         <div className="mt-10">
-          <Counter />
+          <Suspense fallback={<Loading />}>
+            <Counter />
+          </Suspense>
         </div>
       </div>
     </>

@@ -20,7 +20,7 @@ export default async function ForgotPasswordPage() {
         href={'/sign-in'}
         className="mt-8 text-xs hover:underline underline-offset-4 text-muted-foreground"
       >
-        Sign In
+        Back to Sign In
       </Link>
     </div>
   );

@@ -9,7 +9,7 @@ export default function NotFound() {
       <p className="text-sm">This page does not exist.</p>
       <Link
         href="/home"
-        className="hover:underline underline-offset-4 hover:text-muted-foreground text-sm"
+        className="hover:underline underline-offset-4 text-cyan-700 text-sm"
       >
         Return Home
       </Link>
