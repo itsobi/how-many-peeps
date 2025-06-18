@@ -207,7 +207,11 @@ export function SignUpForm() {
         {/* Bot protection */}
         <div id="clerk-captcha" />
 
-        <Button type="submit" className="w-full">
+        <Button
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
+          type="submit"
+          className="w-full"
+        >
           Create account
         </Button>
         {errors && (

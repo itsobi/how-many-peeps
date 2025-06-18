@@ -3,7 +3,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '../ui/button';
@@ -19,7 +18,6 @@ export function ActionsDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent side="right" align="end">
         <DropdownMenuLabel>User Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
           <span className="flex items-center gap-2">
             <Shield className="w-4 h-4" /> Set as admin
@@ -27,7 +25,7 @@ export function ActionsDropdown() {
         </DropdownMenuItem>
         <DropdownMenuItem>
           <span className="flex items-center gap-2">
-            <UserRoundX className="w-4 h-4" /> Remove user from venue
+            <UserRoundX className="w-4 h-4" /> Remove user from organization
           </span>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -1,7 +1,6 @@
 import ConvexClientProvider from '@/components/convex-client-provider';
-import { Header } from '@/components/header/header';
-
-import { VenueSidebar } from '@/components/venue-sidebar/venue-sidebar';
+import { OrganizationSidebar } from '@/components/organization-sidebar/organization-sidebar';
+import { HeaderView } from '@/components/views/header-view';
 
 export default function ProtectedLayout({
   children,
@@ -10,16 +9,14 @@ export default function ProtectedLayout({
 }) {
   return (
     <div className="h-screen flex flex-col">
-      <Header />
+      <ConvexClientProvider>
+        <HeaderView />
 
-      <div className="flex flex-1 w-full max-w-7xl mx-auto px-2 md-px-0 overflow-hidden">
-        <div className={`hidden lg:block border-r w-1/4`}>
-          <VenueSidebar />
+        <div className="flex flex-1 w-full max-w-7xl mx-auto px-2 md-px-0 overflow-hidden">
+          <OrganizationSidebar />
+          <main className="w-full overflow-y-auto p-4">{children}</main>
         </div>
-        <main className="w-full overflow-y-auto p-4">
-          <ConvexClientProvider>{children}</ConvexClientProvider>
-        </main>
-      </div>
+      </ConvexClientProvider>
     </div>
   );
 }

@@ -9,7 +9,11 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth: any, req: any) => {
-  if (!isPublicRoute(req)) await auth.protect();
+  const { userId, redirectToSignIn } = await auth();
+
+  if (!userId && !isPublicRoute(req)) {
+    return redirectToSignIn();
+  }
 });
 
 export const config = {

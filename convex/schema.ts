@@ -8,23 +8,14 @@ export default defineSchema({
     lastName: v.optional(v.string()),
     email: v.string(),
     imageUrl: v.string(),
-    role: v.union(v.literal('admin'), v.literal('staff'), v.literal('user')),
-    barId: v.optional(v.id('bars')),
-  })
-    .index('by_external_id', ['externalId'])
-    .index('by_bar_id', ['barId']),
-  bars: defineTable({
-    name: v.string(),
-    address: v.string(),
-    imageUrl: v.string(),
-    countPastMidnight: v.boolean(),
-  }),
+    canCreateOrganization: v.boolean(),
+  }).index('by_external_id', ['externalId']),
   crowdCounts: defineTable({
-    barId: v.id('bars'),
+    externalOrganizationId: v.string(),
     count: v.number(),
-  }).index('by_bar_id', ['barId']),
+  }).index('by_external_organization_id', ['externalOrganizationId']),
   dailyCrowdCounts: defineTable({
-    barId: v.id('bars'),
+    externalOrganizationId: v.string(),
     totalCount: v.number(),
     date: v.string(),
   }).index('by_date', ['date']),

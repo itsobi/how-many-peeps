@@ -86,7 +86,14 @@ function ProvideEmail({
           )}
         />
 
-        <Button type="submit" className="w-full">
+        <Button
+          disabled={
+            !provideEmailForm.formState.isValid ||
+            provideEmailForm.formState.isSubmitting
+          }
+          type="submit"
+          className="w-full"
+        >
           Send Code
         </Button>
         {error && <p>{error}</p>}
@@ -125,7 +132,6 @@ function ResetPassword({
   const handleResetPassword = async (
     values: z.infer<typeof resetPasswordFormSchema>
   ) => {
-    console.log('hello');
     if (!isLoaded || !setActive) return;
     const loadingToast = toast.loading('Resetting your password...');
 
@@ -186,7 +192,14 @@ function ResetPassword({
           )}
         />
 
-        <Button type="submit" className="w-full">
+        <Button
+          disabled={
+            !resetPasswordForm.formState.isValid ||
+            resetPasswordForm.formState.isSubmitting
+          }
+          type="submit"
+          className="w-full"
+        >
           Reset Password
         </Button>
         {error && <p>{error}</p>}

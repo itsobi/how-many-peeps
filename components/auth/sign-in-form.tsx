@@ -44,7 +44,7 @@ export function SignInForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setErrors(undefined);
     if (!isLoaded) return;
-    const loadingToast = toast.loading('Creating your account...');
+    const loadingToast = toast.loading('Signing you in...');
     try {
       const signInAttempt = await signIn.create({
         identifier: values.email,
@@ -103,7 +103,11 @@ export function SignInForm() {
           )}
         />
 
-        <Button type="submit" className="w-full">
+        <Button
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
+          type="submit"
+          className="w-full"
+        >
           Sign in
         </Button>
 

@@ -71,8 +71,8 @@ export function Counter() {
               key="save-button"
             >
               <Button
-                variant={'secondary'}
                 onClick={handleSaveGroupSize}
+                variant="secondary"
                 className="w-full"
               >
                 Save Group Size

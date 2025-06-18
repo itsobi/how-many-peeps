@@ -9,20 +9,20 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import {
-  Lock,
-  Users,
   Menu,
   Home,
-  Building,
   Calculator,
   Settings,
+  UsersRound,
+  Building2,
 } from 'lucide-react';
 import SidebarLink from '../header/sidebar-link';
-import Image from 'next/image';
-import { SidebarUserButton } from './sidebar-user-button';
 import { useIsMobile } from '@/lib/hooks/use-mobile';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Button } from '../ui/button';
+import { UserButton } from '../user-button';
+import { useAuth } from '@clerk/nextjs';
+import { OrganizationHeadingSidebar } from './organization-heading-sidebar';
 
 const sidebarItems = [
   {
@@ -32,7 +32,7 @@ const sidebarItems = [
   },
   {
     label: 'Venues',
-    icon: <Building className="w-4 h-4" />,
+    icon: <Building2 className="w-4 h-4" />,
     href: '/venues',
   },
 ];
@@ -45,7 +45,7 @@ const privateVenueItems = [
   },
   {
     label: 'Users',
-    icon: <Users className="w-4 h-4" />,
+    icon: <UsersRound className="w-4 h-4" />,
     href: '/users',
   },
   {
@@ -55,8 +55,45 @@ const privateVenueItems = [
   },
 ];
 
-export function MobileVenueSidebar() {
+function OrganizationLinks({
+  setOpen,
+}: {
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) {
+  const { orgId, isLoaded } = useAuth();
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (!orgId) {
+    return null;
+  }
+
+  return (
+    <>
+      <div className="border-b" />
+
+      {/* Private Venue Menu */}
+      <div className="p-4 flex flex-col gap-2 text-sm">
+        <h4 className="text-xs text-muted-foreground">Organization Access</h4>
+        {privateVenueItems.map((item) => (
+          <SidebarLink
+            onClick={() => setOpen(false)}
+            key={item.label}
+            href={item.href}
+            icon={item.icon}
+            label={item.label}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
+
+export function MobileOrganizationSidebar() {
   const [open, setOpen] = useState(false);
+
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -79,21 +116,7 @@ export function MobileVenueSidebar() {
         <aside className="flex flex-col h-full">
           {/* Header */}
           <div className="border-b">
-            <div className="flex gap-2 p-4">
-              <Image
-                src="/shangrila.jpeg"
-                alt="logo"
-                width={32}
-                height={32}
-                className="rounded object-cover"
-              />
-              <div className="flex flex-col">
-                <p>Shangri-La</p>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Lock className="w-3 h-3" /> Private
-                </p>
-              </div>
-            </div>
+            <OrganizationHeadingSidebar />
           </div>
 
           {/* Menu */}
@@ -109,24 +132,10 @@ export function MobileVenueSidebar() {
             ))}
           </div>
 
-          <div className="border-b" />
-
-          {/* Private Venue Menu */}
-          <div className="p-4 flex flex-col gap-2 text-sm">
-            <h4 className="text-xs text-muted-foreground">Venue Access</h4>
-            {privateVenueItems.map((item) => (
-              <SidebarLink
-                onClick={() => setOpen(false)}
-                key={item.label}
-                href={item.href}
-                icon={item.icon}
-                label={item.label}
-              />
-            ))}
-          </div>
+          <OrganizationLinks setOpen={setOpen} />
 
           <div className="mt-auto pb-4">
-            <SidebarUserButton setOpen={setOpen} />
+            <UserButton setOpen={setOpen} />
           </div>
         </aside>
       </SheetContent>

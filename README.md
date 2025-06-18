@@ -1,3 +1,10 @@
+## TODO
+
+- Table for invitations
+- Revoke invitations functionality
+- Paywall for more than 5 users in org
+- Paywall for data exports (charts, etc.)
+
 ## Getting Started
 
 First, run the development server:

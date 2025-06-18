@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { internalMutation } from './_generated/server';
+import { internalMutation, query } from './_generated/server';
 
 export const createUser = internalMutation({
   args: {
@@ -8,8 +8,7 @@ export const createUser = internalMutation({
     lastName: v.optional(v.string()),
     email: v.string(),
     imageUrl: v.string(),
-    role: v.union(v.literal('admin'), v.literal('staff'), v.literal('user')),
-    barId: v.optional(v.id('bars')),
+    canCreateOrganization: v.boolean(),
   },
   handler: async (ctx, args) => {
     const userExist = await ctx.db
@@ -25,8 +24,7 @@ export const createUser = internalMutation({
       lastName: args.lastName,
       email: args.email,
       imageUrl: args.imageUrl,
-      role: args.role ?? 'user',
-      barId: args.barId,
+      canCreateOrganization: false,
     });
   },
 });
@@ -75,5 +73,25 @@ export const deleteUser = internalMutation({
     if (!user) throw new Error('User does not exist');
 
     await ctx.db.delete(user._id);
+  },
+});
+
+export const canUserCreateOrganization = query({
+  args: {},
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    const userId = identity?.subject;
+
+    if (!userId) {
+      return false;
+    }
+
+    const user = await ctx.db
+      .query('users')
+      .withIndex('by_external_id', (q) => q.eq('externalId', userId))
+      .first();
+
+    return user?.canCreateOrganization;
   },
 });

@@ -2,11 +2,9 @@
 
 import { User } from '@/lib/types';
 import { ColumnDef } from '@tanstack/react-table';
-import { Button } from '../ui/button';
-import { EllipsisIcon, EllipsisVerticalIcon } from 'lucide-react';
 import { ActionsDropdown } from './actions-dropdown';
 
-export const columns: ColumnDef<User>[] = [
+export const usersColumns: ColumnDef<User>[] = [
   {
     accessorFn: (row) => `${row.firstName} ${row.lastName}`,
     header: 'Name',

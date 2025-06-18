@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
-import { Poppins } from 'next/font/google';
 import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from 'sonner';
 
-const poppins = Poppins({
+const inter = Inter({
   weight: ['100', '200', '400', '500', '600', '700'],
   subsets: ['latin'],
 });
@@ -21,9 +21,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        variables: {
+          colorPrimary: '#0e7490',
+          fontSize: '12px',
+        },
+      }}
+    >
       <html lang="en" suppressHydrationWarning>
-        <body className={`${poppins.className}`}>
+        <body className={`${inter.className}`}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
