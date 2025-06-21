@@ -1,10 +1,10 @@
 ## TODO
 
-- Live counter
-- Group number
-- Admin check in group number mutation
+- Home page
+- Venues page
 - Paywall for more than 5 users in org
 - Paywall for data exports (charts, etc.)
+- Landing page
 
 ## Getting Started
 
