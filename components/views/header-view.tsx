@@ -5,6 +5,8 @@ import { Header } from '../header/header';
 export async function HeaderView() {
   const { userId } = await auth();
 
-  if (!userId) redirect('/sign-in');
+  if (!userId) {
+    return redirect('/sign-in');
+  }
   return <Header />;
 }

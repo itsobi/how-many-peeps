@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { LoadingScreen } from '../loading';
+import { LoadingView } from '../loading-view';
 import { useOrganizationList } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
@@ -114,7 +114,7 @@ export default function CreateOrganizationForm() {
   };
 
   if (!isLoaded) {
-    return <LoadingScreen />;
+    return <LoadingView />;
   }
 
   return (

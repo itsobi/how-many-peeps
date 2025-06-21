@@ -1,10 +1,10 @@
 'use client';
 
-import { User } from '@/lib/types';
+import { roleEnum, User } from '@/lib/types';
 import { ColumnDef } from '@tanstack/react-table';
-import { ActionsDropdown } from './actions-dropdown';
+import { ActionsDropdown } from '../users/actions-dropdown';
 
-export const usersColumns: ColumnDef<User>[] = [
+export const userColumns: ColumnDef<User>[] = [
   {
     accessorFn: (row) => `${row.firstName} ${row.lastName}`,
     header: 'Name',
@@ -32,21 +32,30 @@ export const usersColumns: ColumnDef<User>[] = [
     accessorKey: 'role',
     header: 'Role',
     cell: ({ row }) => {
-      return <span className="capitalize">{row.original.role}</span>;
+      const role = row.original.role === roleEnum.ADMIN ? 'Admin' : 'Member';
+      return <span>{role}</span>;
     },
   },
   {
     accessorKey: 'createdAt',
-    header: 'Joined',
+    header: () => <div className="text-center">Joined</div>,
     cell: ({ row }) => {
-      return <span>{row.original.createdAt.toLocaleDateString()}</span>;
+      return (
+        <div className="text-center">
+          {row.original.createdAt.toLocaleDateString()}
+        </div>
+      );
     },
   },
   {
     accessorKey: 'actions',
-    header: 'Actions',
+    header: () => <div className="hidden">Actions</div>,
     cell: ({ row }) => {
-      return <ActionsDropdown />;
+      return (
+        <div className="flex justify-end">
+          <ActionsDropdown row={row.original} />
+        </div>
+      );
     },
   },
 ];

@@ -65,7 +65,7 @@ export function SignInForm() {
       toast.dismiss(loadingToast);
       console.error(JSON.stringify(error, null, 2));
       if (isClerkAPIResponseError(error)) {
-        toast.error(error.errors[0].message);
+        toast.error(error.errors[0].longMessage);
         setErrors(error.errors);
       } else {
         toast.error('Failed to create your account. Try again.');
@@ -108,7 +108,7 @@ export function SignInForm() {
           type="submit"
           className="w-full"
         >
-          Sign in
+          {form.formState.isSubmitting ? 'Signing in...' : 'Sign in'}
         </Button>
 
         {errors && (

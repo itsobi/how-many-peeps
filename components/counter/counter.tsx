@@ -2,25 +2,90 @@
 
 import { AnimatePresence, motion } from 'motion/react';
 
+import { Preloaded, usePreloadedQuery } from 'convex/react';
+
 import { ChevronDown, ChevronUp, UserMinus, UserPlus } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Button } from '../ui/button';
+import { useAuth } from '@clerk/nextjs';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { toast } from 'sonner';
 
-export function Counter() {
-  const [groupSize, setGroupSize] = useState(0);
+interface Props {
+  preloadedCrowdCount: Preloaded<typeof api.crowdCounts.getCrowdCount>;
+  preloadedGroupSize: Preloaded<typeof api.crowdCounts.getGroupSize>;
+}
+
+export function Counter({ preloadedCrowdCount, preloadedGroupSize }: Props) {
+  const { orgId } = useAuth();
+  const crowdCount = usePreloadedQuery(preloadedCrowdCount);
+  const groupSize = usePreloadedQuery(preloadedGroupSize);
+  const [groupSizeState, setGroupSizeState] = useState<number | null>(
+    groupSize
+  );
   const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [updateCrowdCountIsPending, startCrowdCountTransition] =
+    useTransition();
+  const [updateGroupSizeIsPending, startGroupSizeTransition] = useTransition();
 
-  const handleDecrementGroup = useCallback(() => {
-    setIsButtonClicked(true);
-    setGroupSize((prev) => Math.max(0, prev - 1));
-  }, []);
+  const updateOrgCrowdCount = useMutation(api.crowdCounts.updateCrowdCount);
+  const updateGroupSize = useMutation(api.crowdCounts.updateGroupSize);
 
-  const handleIncrementGroup = useCallback(() => {
+  const handleUpdateCrowdCount = (count: number) => {
+    if (!orgId) {
+      toast.error('Unable to update crowd count, please try again.');
+      return;
+    }
+    startCrowdCountTransition(async () => {
+      const response = await updateOrgCrowdCount({
+        externalOrgId: orgId,
+        count,
+      });
+      if (!response.success) {
+        toast.error(response.message);
+      }
+    });
+  };
+
+  const handleDecrementGroup = () => {
+    if (groupSizeState === null || groupSizeState === undefined) {
+      toast.error('Unable to update group size, please try again.');
+      return;
+    }
     setIsButtonClicked(true);
-    setGroupSize((prev) => prev + 1);
-  }, []);
+    setGroupSizeState((prev) => Math.max(0, (prev ?? 0) - 1));
+  };
+
+  const handleIncrementGroup = () => {
+    if (groupSizeState === null || groupSizeState === undefined) {
+      toast.error('Unable to update group size, please try again.');
+      return;
+    }
+    if (groupSizeState === 25) {
+      toast.error('Group size cannot be greater than 25');
+      return;
+    }
+    setIsButtonClicked(true);
+    setGroupSizeState((prev) => (prev ?? 0) + 1);
+  };
 
   const handleSaveGroupSize = () => {
+    if (!orgId) {
+      toast.error('Unable to update group size, please try again.');
+      return;
+    }
+    startGroupSizeTransition(async () => {
+      const response = await updateGroupSize({
+        externalOrgId: orgId,
+        groupSize: groupSizeState ?? 0,
+      });
+      if (response.success) {
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+    });
     setIsButtonClicked(false);
   };
 
@@ -31,13 +96,7 @@ export function Counter() {
         <p className="text-sm">LIVE COUNT</p>
       </div>
 
-      <h2 className="text-9xl font-semibold">50</h2>
-
-      {/* Badge */}
-      {/* <div className="flex items-center gap-2 px-4 py-1 text-sm">
-        <span className="h-2.5 w-2.5 bg-amber-400 rounded-full animate-pulse" />
-        <span className="text-amber-400">Busy</span>
-      </div> */}
+      <h2 className="text-9xl font-semibold">{crowdCount?.count ?? 0}</h2>
 
       {/* Controls */}
       <div className="flex flex-col w-full gap-4 text-sm text-muted-foreground">
@@ -50,7 +109,7 @@ export function Counter() {
             >
               <ChevronDown className="w-4 h-4" />
             </button>
-            <span className="w-4 text-center">{groupSize}</span>
+            <span className="w-4 text-center">{groupSizeState}</span>
             <button
               className="cursor-pointer hover:bg-accent rounded-md p-1"
               onClick={handleIncrementGroup}
@@ -62,7 +121,7 @@ export function Counter() {
 
         {/* Confirm button */}
         <AnimatePresence mode="popLayout">
-          {isButtonClicked && groupSize > 0 && (
+          {isButtonClicked && (groupSizeState ?? 0) > 0 && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -72,6 +131,7 @@ export function Counter() {
             >
               <Button
                 onClick={handleSaveGroupSize}
+                disabled={updateGroupSizeIsPending}
                 variant="secondary"
                 className="w-full"
               >
@@ -88,27 +148,57 @@ export function Counter() {
         >
           <div className="flex items-center justify-between gap-4">
             <button
-              disabled={groupSize === 0}
+              onClick={() => {
+                if (!crowdCount || crowdCount.count === 0) {
+                  return;
+                }
+                handleUpdateCrowdCount(crowdCount.count - 1);
+              }}
+              disabled={
+                !crowdCount ||
+                crowdCount.count === 0 ||
+                updateCrowdCountIsPending
+              }
               className="cursor-pointer rounded p-6 w-full flex flex-col items-center gap-2 hover:bg-red-500 hover:text-white transition-all duration-300 ease-in-out shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-background disabled:hover:text-muted-foreground"
             >
               <UserMinus className="w-6 h-6" />
               Exit
             </button>
-            <button className="cursor-pointer rounded p-6 w-full flex flex-col items-center gap-2 hover:bg-green-500 hover:text-white transition-colors duration-300 ease-in-out shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-background disabled:hover:text-muted-foreground">
+            <button
+              onClick={() =>
+                handleUpdateCrowdCount((crowdCount?.count ?? 0) + 1)
+              }
+              disabled={updateCrowdCountIsPending}
+              className="cursor-pointer rounded p-6 w-full flex flex-col items-center gap-2 hover:bg-green-500 hover:text-white transition-colors duration-300 ease-in-out shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-background disabled:hover:text-muted-foreground"
+            >
               <UserPlus className="w-6 h-6" />
               Enter
             </button>
           </div>
           <div className="flex items-center justify-between gap-4">
             <button
-              disabled={groupSize === 0}
+              onClick={() =>
+                handleUpdateCrowdCount(
+                  (crowdCount?.count ?? 0) - (groupSize ?? 0)
+                )
+              }
+              disabled={
+                groupSize === 0 ||
+                (groupSize ?? 0) > (crowdCount?.count ?? 0) ||
+                updateCrowdCountIsPending
+              }
               className="cursor-pointer rounded p-6 w-full flex flex-col items-center gap-2 hover:bg-red-500 hover:text-white transition-colors duration-300 ease-in-out shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-background disabled:hover:text-muted-foreground"
             >
               <span className="text-lg">-{groupSize}</span>
               <span>Group Exit</span>
             </button>
             <button
-              disabled={groupSize === 0}
+              onClick={() =>
+                handleUpdateCrowdCount(
+                  (crowdCount?.count ?? 0) + (groupSize ?? 0)
+                )
+              }
+              disabled={updateCrowdCountIsPending}
               className="cursor-pointer rounded p-6 w-full flex flex-col items-center gap-2 hover:bg-green-500 hover:text-white transition-colors duration-300 ease-in-out shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-background disabled:hover:text-muted-foreground"
             >
               <span className="text-lg">+{groupSize}</span>

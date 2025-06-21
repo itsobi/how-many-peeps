@@ -1,7 +1,8 @@
 ## TODO
 
-- Table for invitations
-- Revoke invitations functionality
+- Live counter
+- Group number
+- Admin check in group number mutation
 - Paywall for more than 5 users in org
 - Paywall for data exports (charts, etc.)
 

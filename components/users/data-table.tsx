@@ -19,15 +19,28 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isAdmin: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  isAdmin,
 }: DataTableProps<TData, TValue>) {
+  const filteredColumns = columns.filter((column) => {
+    if (
+      'accessorKey' in column &&
+      column.accessorKey === 'actions' &&
+      !isAdmin
+    ) {
+      return false;
+    }
+    return true;
+  });
+
   const table = useReactTable({
     data,
-    columns,
+    columns: filteredColumns,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -72,7 +85,7 @@ export function DataTable<TData, TValue>({
                 colSpan={columns.length}
                 className="h-24 text-center text-muted-foreground"
               >
-                No results.
+                No pending invitations.
               </TableCell>
             </TableRow>
           )}

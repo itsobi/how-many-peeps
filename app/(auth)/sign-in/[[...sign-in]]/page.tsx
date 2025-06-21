@@ -2,8 +2,16 @@ import Link from 'next/link';
 import GoogleSignIn from '@/components/auth/google-sign-in';
 import { SignInForm } from '@/components/auth/sign-in-form';
 import Logo from '@/components/logo';
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  const { userId } = await auth();
+
+  if (userId) {
+    return redirect('/home');
+  }
+
   return (
     <div className="flex flex-col items-center gap-4 px-1">
       <Logo />

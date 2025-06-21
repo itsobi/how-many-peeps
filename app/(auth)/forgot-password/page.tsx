@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 export default async function ForgotPasswordPage() {
   const { userId } = await auth();
   if (userId) {
-    redirect('/home');
+    return redirect('/home');
   }
 
   return (

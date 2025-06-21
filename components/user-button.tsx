@@ -81,7 +81,7 @@ export function UserButton({
     return (
       <CustomAlertDialog
         title="Session not found"
-        description="We couldn't find your session. You will be redirected to the sign in page."
+        description="We couldn't find your session. Please sign in again with your same credentials."
         href="/sign-in"
       />
     );

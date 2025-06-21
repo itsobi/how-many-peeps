@@ -13,6 +13,7 @@ export default defineSchema({
   crowdCounts: defineTable({
     externalOrganizationId: v.string(),
     count: v.number(),
+    groupSize: v.number(),
   }).index('by_external_organization_id', ['externalOrganizationId']),
   dailyCrowdCounts: defineTable({
     externalOrganizationId: v.string(),

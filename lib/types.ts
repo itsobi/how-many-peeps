@@ -5,7 +5,14 @@ export type User = {
   email: string;
   image: string;
   createdAt: Date;
-  role: 'admin' | 'user';
+  role: roleEnum;
+};
+
+export type Invitation = {
+  id: string;
+  email: string;
+  status: string;
+  createdAt: Date;
 };
 
 export const OrgUserMembershipsParams = {
@@ -29,7 +36,7 @@ export const OrgInvitationsParams = {
   },
 };
 
-export const roleEnum = {
-  ADMIN: 'org:admin',
-  MEMBER: 'org:member',
-};
+export enum roleEnum {
+  ADMIN = 'org:admin',
+  MEMBER = 'org:member',
+}

@@ -17,18 +17,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem } from '../ui/form';
 import { toast } from 'sonner';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useOrganization } from '@clerk/nextjs';
-import { OrgInvitationsParams, roleEnum } from '@/lib/types';
+import { OrgInvitationsParams } from '@/lib/types';
 
-import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
+import { inviteUser } from '@/lib/actions/invite-user';
 
 export const addUserSchema = z.object({
   email: z.string().email(),
 });
 
 export function InviteUserDialog() {
-  const { isLoaded, organization } = useOrganization(OrgInvitationsParams);
+  const { isLoaded, organization, invitations } =
+    useOrganization(OrgInvitationsParams);
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof addUserSchema>>({
@@ -39,31 +40,22 @@ export function InviteUserDialog() {
   });
 
   const onSubmit = (values: z.infer<typeof addUserSchema>) => {
-    // TODO: send actual venue id to action as well
     if (!isLoaded || !organization) {
       return;
     }
 
-    toast.promise(
-      organization.inviteMember({
-        emailAddress: values.email,
-        role: roleEnum.MEMBER,
-      }),
-      {
-        loading: 'Sending invitation...',
-        success: (data) => {
-          form.reset();
-          setOpen(false);
-          return `Invitation sent to ${data.emailAddress}`;
-        },
-        error: (error) => {
-          if (isClerkAPIResponseError(error)) {
-            return error.errors[0].longMessage;
-          }
-          return 'Sorry, there was an issue sending the invitation';
-        },
-      }
-    );
+    toast.promise(inviteUser({ email: values.email, orgId: organization.id }), {
+      loading: 'Sending invitation...',
+      success: (data) => {
+        setOpen(false);
+        form.reset();
+        invitations?.revalidate?.();
+        return data.message;
+      },
+      error: (error) => {
+        return error.message;
+      },
+    });
   };
 
   return (

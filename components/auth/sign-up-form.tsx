@@ -1,5 +1,7 @@
 'use client';
 
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp';
+
 import {
   Form,
   FormControl,
@@ -7,16 +9,24 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form';
+
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from '@/components/ui/input-otp';
+
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+
 import { z } from 'zod';
 import { useSignUp } from '@clerk/nextjs';
 import { ClerkAPIError } from '@clerk/types';
 import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
-import { useState, useRef } from 'react';
+import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
@@ -31,15 +41,8 @@ export function SignUpForm() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [verifying, setVerifying] = useState(false);
   const [code, setCode] = useState('');
-  const [verificationCode, setVerificationCode] = useState<string[]>(
-    Array(6).fill('')
-  );
   const [errors, setErrors] = useState<ClerkAPIError[]>();
   const router = useRouter();
-
-  const inputRefs = Array(6)
-    .fill(0)
-    .map(() => useRef<HTMLInputElement>(null));
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,88 +52,65 @@ export function SignUpForm() {
     },
   });
 
-  const handleCodeChange = (index: number, value: string) => {
-    if (value.length > 1) return; // Prevent multiple characters
-
-    const newCode = [...verificationCode];
-    newCode[index] = value;
-    setVerificationCode(newCode);
-
-    // Move to next input if value is entered
-    if (value && index < 5) {
-      inputRefs[index + 1]?.current?.focus();
-    }
-  };
-
-  const handleKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (e.key === 'Backspace' && !verificationCode[index] && index > 0) {
-      // Move to previous input on backspace if current input is empty
-      inputRefs[index - 1]?.current?.focus();
-    }
-  };
+  const [signUpPending, startSignUpTransition] = useTransition();
+  const [verifyPending, startVerifyTransition] = useTransition();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setErrors(undefined);
     if (!isLoaded) return;
-    const signUpToast = toast.loading('Creating your account...');
-    try {
-      await signUp.create({
-        emailAddress: values.email,
-        password: values.password,
-      });
 
-      await signUp.prepareEmailAddressVerification({
-        strategy: 'email_code',
-      });
-      toast.dismiss(signUpToast);
-      toast.info('A verification email was sent to the provided email.');
-      setVerifying(true);
-    } catch (error) {
-      toast.dismiss(signUpToast);
-      console.error(JSON.stringify(error, null, 2));
-      if (isClerkAPIResponseError(error)) {
-        toast.error(error.errors[0].message);
-        setErrors(error.errors);
-      } else {
-        toast.error('Failed to create your account. Try again.');
+    startSignUpTransition(async () => {
+      try {
+        await signUp.create({
+          emailAddress: values.email,
+          password: values.password,
+        });
+
+        await signUp.prepareEmailAddressVerification({
+          strategy: 'email_code',
+        });
+        toast.info(`A verification email was sent to ${values.email}`);
+        setVerifying(true);
+      } catch (error) {
+        console.error(error);
+        if (isClerkAPIResponseError(error)) {
+          setErrors(error.errors);
+          toast.error(error.errors[0].longMessage);
+        } else {
+          toast.error('Failed to create your account. Try again.');
+        }
       }
-    }
+    });
   };
 
-  const handleVerify = async () => {
+  const handleVerify = () => {
     if (!isLoaded) return;
-    const joinedCode = verificationCode.join('').trim();
-    const loadingToast = toast.loading('Verifying your code...');
-    try {
-      const signUpAttempt = await signUp.attemptEmailAddressVerification({
-        code: joinedCode,
-      });
 
-      if (signUpAttempt.status === 'complete') {
-        toast.dismiss(loadingToast);
-        await setActive({ session: signUpAttempt.createdSessionId });
-        toast.success('Verification was successful, have fun inside!');
+    startVerifyTransition(async () => {
+      try {
+        const signUpAttempt = await signUp.attemptEmailAddressVerification({
+          code,
+        });
 
-        router.push('/home');
-      } else {
-        toast.dismiss(loadingToast);
-        console.error(JSON.stringify(signUpAttempt, null, 2));
+        if (signUpAttempt.status === 'complete') {
+          await setActive({ session: signUpAttempt.createdSessionId });
+          toast.success('Verification was successful, have fun inside!');
+          router.push('/home');
+        } else {
+          console.error(signUpAttempt);
+          toast.error(
+            'There was an issue verifying your email, please try again'
+          );
+        }
+      } catch (error) {
+        console.error(error);
         toast.error(
-          'There was an issue verifying your email, please try again'
+          isClerkAPIResponseError(error)
+            ? error.errors[0].longMessage
+            : 'There was an issue verifying your email, please try again'
         );
       }
-    } catch (error) {
-      toast.dismiss(loadingToast);
-      console.error('Error:', JSON.stringify(error, null, 2));
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : 'There was an issue verifying your email, please try again'
-      );
-    }
+    });
   };
 
   if (verifying) {
@@ -138,9 +118,11 @@ export function SignUpForm() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (!verificationCode.some((v) => !v)) {
-            handleVerify();
+          if (code.length !== 6) {
+            toast.error('Please enter the 6-digit code');
+            return;
           }
+          handleVerify();
         }}
         className="flex flex-col gap-4 mt-4"
       >
@@ -149,26 +131,29 @@ export function SignUpForm() {
           We sent a verification code to your email
         </p>
         <div className="flex justify-center gap-2">
-          {verificationCode.map((value, index) => (
-            <Input
-              key={index}
-              ref={inputRefs[index]}
-              type="text"
-              maxLength={1}
-              className="w-10 h-10 text-center"
-              value={value}
-              onChange={(e) => handleCodeChange(index, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
-              inputMode="numeric"
-            />
-          ))}
+          <InputOTP
+            maxLength={6}
+            pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+            value={code}
+            onChange={(value) => setCode(value)}
+            inputMode="numeric"
+          >
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
         </div>
         <Button
           className="w-full"
           type="submit"
-          disabled={verificationCode.some((v) => !v)}
+          disabled={code.length !== 6 || verifyPending}
         >
-          Verify Email
+          {verifyPending ? 'Verifying...' : 'Verify Email'}
         </Button>
       </form>
     );
@@ -208,11 +193,17 @@ export function SignUpForm() {
         <div id="clerk-captcha" />
 
         <Button
-          disabled={!form.formState.isValid || form.formState.isSubmitting}
+          disabled={
+            !form.formState.isValid ||
+            form.formState.isSubmitting ||
+            signUpPending
+          }
           type="submit"
           className="w-full"
         >
-          Create account
+          {form.formState.isSubmitting || signUpPending
+            ? 'Creating account...'
+            : 'Create account'}
         </Button>
         {errors && (
           <ul>

@@ -10,7 +10,7 @@ export default async function SettingsPage() {
 
   if (!orgId) {
     if (!userId) {
-      redirect('/');
+      return redirect('/');
     }
     return (
       <CustomAlertDialog
