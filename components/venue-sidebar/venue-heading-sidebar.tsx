@@ -5,23 +5,19 @@ import { Lock } from 'lucide-react';
 
 import Image from 'next/image';
 import Logo from '../logo';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
-export function OrganizationHeadingSidebar() {
-  const { isLoaded, organization } = useOrganization();
+interface Props {
+  orgId: string;
+}
 
-  if (!isLoaded) {
-    return (
-      <div className="flex gap-2 p-4">
-        <div className="w-8 h-8 rounded bg-muted animate-pulse" />
-        <div className="flex flex-col gap-2">
-          <div className="h-4 w-24 bg-muted animate-pulse rounded" />
-          <div className="h-3 w-16 bg-muted animate-pulse rounded" />
-        </div>
-      </div>
-    );
-  }
+export function VenueHeadingSidebar({ orgId }: Props) {
+  const venue = useQuery(api.venues.getVenue, {
+    externalId: orgId,
+  });
 
-  if (!organization) {
+  if (!venue) {
     return (
       <div className="flex items-center justify-center py-2">
         <Logo />
@@ -31,14 +27,14 @@ export function OrganizationHeadingSidebar() {
   return (
     <div className="flex gap-2 p-4">
       <Image
-        src={organization?.imageUrl}
+        src={venue?.imageUrl}
         alt="logo"
         width={32}
         height={32}
         className="rounded object-contain"
       />
       <div className="flex flex-col">
-        <p className="font-medium">{organization?.name}</p>
+        <p className="font-medium">{venue?.name}</p>
         <p className="text-xs text-muted-foreground flex items-center gap-1">
           <Lock className="w-3 h-3" /> Private
         </p>

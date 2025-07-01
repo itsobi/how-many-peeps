@@ -2,7 +2,7 @@
 
 import { Invitation } from '@/lib/types';
 import { ColumnDef } from '@tanstack/react-table';
-import { ActionsDropdown } from '../users/actions-dropdown';
+import { ActionsDropdown } from './actions-dropdown';
 
 export const invitationColumns: ColumnDef<Invitation>[] = [
   {

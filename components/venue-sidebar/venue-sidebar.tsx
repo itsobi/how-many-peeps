@@ -1,9 +1,8 @@
 import { Calculator, Settings, UsersRound } from 'lucide-react';
 import SidebarLink from '../header/sidebar-link';
 import { UserButton } from '../user-button';
-import { OrganizationHeadingSidebar } from './organization-heading-sidebar';
 import { auth } from '@clerk/nextjs/server';
-import { Button } from '../ui/button';
+import { VenueHeadingSidebar } from './venue-heading-sidebar';
 
 const privateVenueItems = [
   {
@@ -35,7 +34,7 @@ export async function OrganizationSidebar() {
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="border-b">
-          <OrganizationHeadingSidebar />
+          <VenueHeadingSidebar orgId={orgId} />
         </div>
 
         {/* Menu */}

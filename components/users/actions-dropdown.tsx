@@ -7,14 +7,28 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+
 import { Button } from '../ui/button';
 import { EllipsisIcon, Shield, UserRound, UserRoundX } from 'lucide-react';
 import { useAuth, useOrganization } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { revokeInvitation } from '@/lib/actions/revoke-invitation';
 import { Invitation, OrgInvitationsParams, roleEnum, User } from '@/lib/types';
-import { updateOrgMembership } from '@/lib/actions/update-org-membership';
-import { removeUserFromOrg } from '@/lib/actions/org-remove-user';
+import { updateOrgMembership } from '@/lib/actions/update-venue-membership';
+import { removeUserFromVenue } from '@/lib/actions/venue-remove-user';
+import { useState } from 'react';
 
 export function ActionsDropdown({
   invitations,
@@ -24,6 +38,7 @@ export function ActionsDropdown({
   row: Invitation | User;
 }) {
   const { userId, orgId, isLoaded: isAuthLoaded } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
   const {
     isLoaded,
     invitations: invitationsList,
@@ -85,8 +100,8 @@ export function ActionsDropdown({
   const handleRemoveUserFromOrg = (userId: string) => {
     // userId will be coming from row.id - userId of user
     toast.promise(
-      removeUserFromOrg({
-        orgId,
+      removeUserFromVenue({
+        venueId: orgId,
         userId,
       }),
       {
@@ -143,8 +158,8 @@ export function ActionsDropdown({
         <DropdownMenuItem
           onClick={() => {
             if (
-              confirm(
-                'Are you sure you want to remove this user from the organization?'
+              window.confirm(
+                'Are you sure you want to remove this user from the venue?'
               )
             ) {
               handleRemoveUserFromOrg(row.id);
@@ -153,8 +168,7 @@ export function ActionsDropdown({
           }}
         >
           <span className="flex items-center gap-2 text-red-400">
-            <UserRoundX className="text-red-400" /> Remove user from
-            organization
+            <UserRoundX className="text-red-400" /> Remove user from venue
           </span>
         </DropdownMenuItem>
       </DropdownMenuContent>

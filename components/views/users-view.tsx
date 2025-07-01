@@ -1,10 +1,13 @@
-import { auth } from '@clerk/nextjs/server';
+'use client';
+
 import { CustomAlertDialog } from '../custom-alert-dialog';
 import { redirect } from 'next/navigation';
 import { TableTabs } from '../users/table-tabs';
+import { useAuth } from '@clerk/nextjs';
+import { LoadingView } from '../loading-view';
 
-export async function UsersView() {
-  const { userId, orgId } = await auth();
+export function UsersView() {
+  const { isLoaded, userId, orgId } = useAuth();
 
   if (!orgId) {
     if (!userId) {
@@ -17,6 +20,10 @@ export async function UsersView() {
         href="/home"
       />
     );
+  }
+
+  if (!isLoaded) {
+    return <LoadingView />;
   }
 
   return <TableTabs />;

@@ -1,17 +1,20 @@
 import { v } from 'convex/values';
-import { query, mutation } from './_generated/server';
+import { query, mutation, internalMutation } from './_generated/server';
 
 export const getCrowdCount = query({
-  args: { externalOrgId: v.string() },
+  args: { venueId: v.string() },
   handler: async (ctx, args) => {
+    if (!args.venueId) {
+      throw new Error('Venue ID is required');
+    }
     const identity = ctx.auth.getUserIdentity();
 
     if (!identity) throw new Error('Not Authorized');
 
     const crowdCount = await ctx.db
       .query('crowdCounts')
-      .withIndex('by_external_organization_id', (q) =>
-        q.eq('externalOrganizationId', args.externalOrgId)
+      .withIndex('by_external_venue_id', (q) =>
+        q.eq('externalVenueId', args.venueId)
       )
       .first();
 
@@ -20,16 +23,19 @@ export const getCrowdCount = query({
 });
 
 export const getGroupSize = query({
-  args: { externalOrgId: v.string() },
+  args: { venueId: v.string() },
   handler: async (ctx, args) => {
+    if (!args.venueId) {
+      throw new Error('Venue ID is required');
+    }
     const identity = ctx.auth.getUserIdentity();
 
     if (!identity) throw new Error('Not Authorized');
 
     const record = await ctx.db
       .query('crowdCounts')
-      .withIndex('by_external_organization_id', (q) =>
-        q.eq('externalOrganizationId', args.externalOrgId)
+      .withIndex('by_external_venue_id', (q) =>
+        q.eq('externalVenueId', args.venueId)
       )
       .first();
 
@@ -39,7 +45,7 @@ export const getGroupSize = query({
 
 export const updateCrowdCount = mutation({
   args: {
-    externalOrgId: v.string(),
+    venueId: v.string(),
     count: v.number(),
   },
   handler: async (ctx, args) => {
@@ -50,8 +56,8 @@ export const updateCrowdCount = mutation({
     try {
       const existingRecord = await ctx.db
         .query('crowdCounts')
-        .withIndex('by_external_organization_id', (q) =>
-          q.eq('externalOrganizationId', args.externalOrgId)
+        .withIndex('by_external_venue_id', (q) =>
+          q.eq('externalVenueId', args.venueId)
         )
         .first();
 
@@ -65,7 +71,7 @@ export const updateCrowdCount = mutation({
         };
       } else {
         await ctx.db.insert('crowdCounts', {
-          externalOrganizationId: args.externalOrgId,
+          externalVenueId: args.venueId,
           count: args.count,
           groupSize: 0,
         });
@@ -97,8 +103,8 @@ export const updateGroupSize = mutation({
     try {
       const existingRecord = await ctx.db
         .query('crowdCounts')
-        .withIndex('by_external_organization_id', (q) =>
-          q.eq('externalOrganizationId', args.externalOrgId)
+        .withIndex('by_external_venue_id', (q) =>
+          q.eq('externalVenueId', args.externalOrgId)
         )
         .first();
 
@@ -112,7 +118,7 @@ export const updateGroupSize = mutation({
         };
       } else {
         await ctx.db.insert('crowdCounts', {
-          externalOrganizationId: args.externalOrgId,
+          externalVenueId: args.externalOrgId,
           count: 0,
           groupSize: args.groupSize,
         });
@@ -128,5 +134,23 @@ export const updateGroupSize = mutation({
         message: 'Unable to update group enter. Please try again.',
       };
     }
+  },
+});
+
+export const deleteCrowdCount = internalMutation({
+  args: {
+    externalOrgId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const record = await ctx.db
+      .query('crowdCounts')
+      .withIndex('by_external_venue_id', (q) =>
+        q.eq('externalVenueId', args.externalOrgId)
+      )
+      .first();
+
+    if (!record) return; // record might not exist. Just return if it doesn't
+
+    await ctx.db.delete(record._id);
   },
 });

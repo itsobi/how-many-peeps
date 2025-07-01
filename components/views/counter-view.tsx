@@ -1,13 +1,13 @@
-import { auth } from '@clerk/nextjs/server';
+'use client';
+
 import { redirect } from 'next/navigation';
 import { CustomAlertDialog } from '../custom-alert-dialog';
-import { preloadQuery } from 'convex/nextjs';
-import { api } from '@/convex/_generated/api';
 import { Counter } from '../counter/counter';
-import Link from 'next/link';
+import { useAuth } from '@clerk/nextjs';
+import { LoadingView } from '../loading-view';
 
-export async function CounterView() {
-  const { userId, orgId } = await auth();
+export function CounterView() {
+  const { isLoaded, userId, orgId } = useAuth();
 
   if (!orgId) {
     if (!userId) {
@@ -22,37 +22,14 @@ export async function CounterView() {
     );
   }
 
-  const preloadedCrowdCount = await preloadQuery(
-    api.crowdCounts.getCrowdCount,
-    {
-      externalOrgId: orgId,
-    }
-  );
-
-  const preloadedGroupSize = await preloadQuery(api.crowdCounts.getGroupSize, {
-    externalOrgId: orgId,
-  });
+  if (!isLoaded) {
+    return <LoadingView />;
+  }
 
   return (
     <>
       <div className="flex justify-center items-center">
-        <Counter
-          preloadedCrowdCount={preloadedCrowdCount}
-          preloadedGroupSize={preloadedGroupSize}
-        />
-      </div>
-
-      <div className="flex justify-center py-8 text-center">
-        <p className="text-xs text-muted-foreground">
-          For any issues regarding the live counter, please visit{' '}
-          <Link
-            href="/counter/manual"
-            className="text-cyan-700 hover:underline"
-          >
-            here
-          </Link>{' '}
-          to update manually.
-        </p>
+        <Counter orgId={orgId} />
       </div>
     </>
   );

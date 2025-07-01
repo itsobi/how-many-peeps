@@ -17,8 +17,13 @@ import { Input } from '@/components/ui/input';
 import { requestAccessFormSchema } from '@/lib/form-schemas';
 import { requestAccess } from '@/lib/actions/request-access';
 import { toast } from 'sonner';
+import { Dispatch, SetStateAction } from 'react';
 
-export function RequestAccessForm() {
+export function RequestAccessForm({
+  setOpen,
+}: {
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) {
   const form = useForm<z.infer<typeof requestAccessFormSchema>>({
     resolver: zodResolver(requestAccessFormSchema),
     defaultValues: {
@@ -33,6 +38,7 @@ export function RequestAccessForm() {
     const { success, message } = await requestAccess(values);
     if (success) {
       form.reset();
+      setOpen(false);
       toast.success(message);
     } else {
       toast.error(message);
@@ -76,9 +82,9 @@ export function RequestAccessForm() {
           name="venue"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Organization</FormLabel>
+              <FormLabel>Venue</FormLabel>
               <FormControl>
-                <Input placeholder="Name of organization" {...field} />
+                <Input placeholder="Name of venue" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

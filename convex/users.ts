@@ -8,7 +8,7 @@ export const createUser = internalMutation({
     lastName: v.optional(v.string()),
     email: v.string(),
     imageUrl: v.string(),
-    canCreateOrganization: v.boolean(),
+    canCreateVenue: v.boolean(),
   },
   handler: async (ctx, args) => {
     const userExist = await ctx.db
@@ -24,7 +24,7 @@ export const createUser = internalMutation({
       lastName: args.lastName,
       email: args.email,
       imageUrl: args.imageUrl,
-      canCreateOrganization: false,
+      canCreateVenue: false,
     });
   },
 });
@@ -46,12 +46,12 @@ export const updateUser = internalMutation({
 
     if (!user) throw new Error('User does not exist');
 
-    if (args.firstName !== undefined || null) {
-      updateFields.username = args.firstName;
+    if (args.firstName !== undefined) {
+      updateFields.firstName = args.firstName;
     }
 
-    if (args.lastName !== undefined || null) {
-      updateFields.username = args.lastName;
+    if (args.lastName !== undefined) {
+      updateFields.lastName = args.lastName;
     }
 
     if (args.imageUrl !== undefined) {
@@ -76,7 +76,7 @@ export const deleteUser = internalMutation({
   },
 });
 
-export const canUserCreateOrganization = query({
+export const canUserCreateVenue = query({
   args: {},
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -92,6 +92,20 @@ export const canUserCreateOrganization = query({
       .withIndex('by_external_id', (q) => q.eq('externalId', userId))
       .first();
 
-    return user?.canCreateOrganization;
+    return user?.canCreateVenue;
+  },
+});
+
+export const doesUserExist = query({
+  args: {
+    email: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query('users')
+      .withIndex('by_email', (q) => q.eq('email', args.email))
+      .first();
+
+    return !!user;
   },
 });

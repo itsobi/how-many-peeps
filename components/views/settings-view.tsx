@@ -1,11 +1,21 @@
-import { auth } from '@clerk/nextjs/server';
+'use client';
+
 import { redirect } from 'next/navigation';
 import { CustomAlertDialog } from '../custom-alert-dialog';
-import { Camera } from 'lucide-react';
-import { Input } from '../ui/input';
+import { BasicInformationForm } from '../venue-settings/basic-information-form';
+import { useAuth } from '@clerk/nextjs';
+import { LoadingView } from '../loading-view';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { VenueHoursForm } from '../venue-settings/venue-hours-form';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
-export async function SettingsView() {
-  const { userId, orgId } = await auth();
+export function SettingsView() {
+  const { isLoaded, userId, orgId } = useAuth();
+
+  const venue = useQuery(api.venues.getVenue, {
+    externalId: orgId ?? '',
+  });
 
   if (!orgId) {
     if (!userId) {
@@ -19,64 +29,25 @@ export async function SettingsView() {
       />
     );
   }
+
+  if (!isLoaded) {
+    return <LoadingView />;
+  }
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="border rounded-lg shadow h-fit">
-        <div className="border-b px-4 py-2">
-          <h4>Venue Settings</h4>
-        </div>
-
-        {/* Card Content */}
-        <div className="p-4">
-          <div className="flex justify-center p-8">
-            <div className="flex flex-col items-center gap-2">
-              <div className="border border-dashed dark:border-none rounded-full bg-gray-200 dark:bg-gray-400 p-8">
-                <Camera />
-              </div>
-              <p className="text-xs">Upload photo</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <div>
-              <label htmlFor="name" className="text-xs">
-                Name
-              </label>
-              <Input id="name" placeholder="Name" />
-            </div>
-            <div>
-              <label htmlFor="address" className="text-xs">
-                Address
-              </label>
-              <Input id="address" placeholder="Address" />
-            </div>
-            <div>
-              <label htmlFor="type" className="text-xs">
-                Type
-              </label>
-              <Input id="type" placeholder="Type" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="border rounded-lg shadow h-fit">
-        <div className="border-b px-4 py-2">
-          <h4>Counter Settings</h4>
-        </div>
-
-        {/* Card Content */}
-        <div className="p-4">
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-              <label htmlFor="name" className="text-xs">
-                Group Size
-              </label>
-              <Input type="number" className="w-1/2" />
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="border rounded p-4 shadow-sm md:w-2/3 md:mx-auto">
+      <Tabs defaultValue="venue-info" className="w-full">
+        <TabsList className="mb-2">
+          <TabsTrigger value="venue-info">Venue Information</TabsTrigger>
+          <TabsTrigger value="hours">Hours</TabsTrigger>
+        </TabsList>
+        <TabsContent value="venue-info">
+          <BasicInformationForm venue={venue} />
+        </TabsContent>
+        <TabsContent value="hours">
+          <VenueHoursForm hours={venue?.hours} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

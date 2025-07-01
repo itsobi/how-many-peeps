@@ -1,5 +1,5 @@
 import ConvexClientProvider from '@/components/convex-client-provider';
-import { OrganizationSidebar } from '@/components/organization-sidebar/organization-sidebar';
+import { OrganizationSidebar } from '@/components/venue-sidebar/venue-sidebar';
 import { HeaderView } from '@/components/views/header-view';
 
 export default function ProtectedLayout({
@@ -8,13 +8,13 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
       <ConvexClientProvider>
         <HeaderView />
 
-        <div className="flex flex-1 w-full max-w-7xl mx-auto px-2 md-px-0 overflow-hidden">
+        <div className="flex flex-1 w-full max-w-7xl mx-auto px-2 md:px-0 overflow-hidden">
           <OrganizationSidebar />
-          <main className="w-full overflow-y-auto p-4">{children}</main>
+          <main className="flex-1 overflow-y-auto p-4">{children}</main>
         </div>
       </ConvexClientProvider>
     </div>

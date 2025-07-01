@@ -1,7 +1,7 @@
 ## TODO
 
-- Home page
-- Venues page
+- Individual Venue page
+- Org Settings
 - Paywall for more than 5 users in org
 - Paywall for data exports (charts, etc.)
 - Landing page

@@ -7,8 +7,8 @@ import { useAuth, useOrganization } from '@clerk/nextjs';
 import { LoadingView } from '../loading-view';
 import { InviteUserDialog } from './invite-user-dialog';
 import { DataTable } from './data-table';
-import { userColumns } from '../organization/user-columns';
-import { invitationColumns } from '../organization/invitation-columns';
+import { invitationColumns } from './invitation-columns';
+import { userColumns } from './user-columns';
 
 export function TableTabs() {
   const { isLoaded: isMembershipsLoaded, memberships } =

@@ -1,3 +1,5 @@
+import { Id } from '@/convex/_generated/dataModel';
+
 export type User = {
   id: string;
   firstName: string;
@@ -13,6 +15,21 @@ export type Invitation = {
   email: string;
   status: string;
   createdAt: Date;
+};
+
+export type Venue = {
+  _id: Id<'venues'>;
+  crowdCount: number;
+  _creationTime: number;
+  externalId: string;
+  name: string;
+  imageUrl: string;
+  city?: string;
+  state?: string;
+  address?: string | undefined;
+  website?: string | undefined;
+
+  type?: string;
 };
 
 export const OrgUserMembershipsParams = {
@@ -39,4 +56,10 @@ export const OrgInvitationsParams = {
 export enum roleEnum {
   ADMIN = 'org:admin',
   MEMBER = 'org:member',
+}
+
+export enum organizationTypeEnum {
+  BAR = 'bar',
+  RESTAURANT = 'restaurant',
+  OTHER = 'other',
 }

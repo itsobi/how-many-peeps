@@ -10,7 +10,7 @@ export const adminCheck = async () => {
   if (orgRole !== roleEnum.ADMIN) {
     return {
       success: false,
-      message: 'Unauthorized',
+      message: 'Unauthorized, you must be an admin to continue',
     };
   }
 

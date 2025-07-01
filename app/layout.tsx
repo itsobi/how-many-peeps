@@ -30,7 +30,7 @@ export default function RootLayout({
       }}
     >
       <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.className}`}>
+        <body className={`${inter.className} overflow-hidden`}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

@@ -4,20 +4,17 @@ import Link from 'next/link';
 import ThemeToggle from './theme-toggle';
 import Logo from '../logo';
 import { NavLinks } from './nav-links';
-import { MobileOrganizationSidebar } from '../organization-sidebar/mobile-organization-sidebar';
 import { UserButton } from '../user-button';
-import { CreateOrganizationDialog } from '../create-organization/create-organization-dialog';
+import { CreateVenueDialog } from '../create-venue/create-venue-dialog';
+import { MobileVenueSidebar } from '../venue-sidebar/mobile-venue-sidebar';
 
-const navLinks = [
-  { href: '/home', label: 'Home' },
-  { href: '/venues', label: 'Venues' },
-];
+const navLinks = [{ href: '/home', label: 'Home' }];
 
 export function Header() {
   return (
     <header className="border-b py-2 dark:text-text-dark">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-        <MobileOrganizationSidebar />
+        <MobileVenueSidebar />
 
         <div className="hidden md:flex items-center gap-2">
           <Link href="/home">
@@ -33,7 +30,7 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <UserButton header />
-          <CreateOrganizationDialog />
+          <CreateVenueDialog />
           <ThemeToggle />
         </div>
       </div>

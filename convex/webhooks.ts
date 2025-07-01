@@ -2,6 +2,7 @@ import { WebhookEvent } from '@clerk/nextjs/server';
 import { httpAction } from './_generated/server';
 import { Webhook } from 'svix';
 import { internal } from './_generated/api';
+import { organizationTypeEnum } from '@/lib/types';
 
 const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
 
@@ -47,7 +48,7 @@ export const handleClerkWebhook = httpAction(async (ctx, request) => {
           lastName: event.data.last_name ?? undefined,
           email: event.data.email_addresses[0].email_address,
           imageUrl: event.data.image_url,
-          canCreateOrganization: false,
+          canCreateVenue: false,
         });
         console.log('--USER CREATED--');
         break;
@@ -68,6 +69,35 @@ export const handleClerkWebhook = httpAction(async (ctx, request) => {
           externalId: event.data.id,
         });
         console.log('--USER DELETED--');
+        break;
+      case 'organization.created':
+        await ctx.runMutation(internal.venues.createVenue, {
+          externalId: event.data.id,
+          name: event.data.name,
+          imageUrl: event.data.image_url || '',
+        });
+        console.log('--ORGANIZATION CREATED--');
+        break;
+      case 'organization.updated':
+        await ctx.runMutation(internal.venues.updateVenueInternalConvex, {
+          externalId: event.data.id,
+          name: event.data.name,
+          imageUrl: event.data.image_url || '',
+        });
+        console.log('--ORGANIZATION UPDATED--');
+        break;
+      case 'organization.deleted':
+        if (!event.data.id) {
+          console.error('User ID missing in delete event');
+          return new Response('User does not exist', { status: 404 });
+        }
+        await ctx.runMutation(internal.venues.deleteVenue, {
+          externalId: event.data.id,
+        });
+        await ctx.runMutation(internal.crowdCounts.deleteCrowdCount, {
+          externalOrgId: event.data.id,
+        });
+        console.log('--ORGANIZATION DELETED--');
         break;
       default:
         console.log('Unhandled event type:', event.type);

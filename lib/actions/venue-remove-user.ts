@@ -3,22 +3,21 @@
 import { auth } from '@clerk/nextjs/server';
 import { clerkClient } from '../clerk-client';
 import { isClerkAPIResponseError } from '@clerk/clerk-js';
-import { roleEnum } from '../types';
 import { adminCheck } from '../helpers';
 
-export const removeUserFromOrg = async ({
-  orgId,
+export const removeUserFromVenue = async ({
+  venueId,
   userId,
 }: {
-  orgId: string | null | undefined;
+  venueId: string | null | undefined;
   userId: string | null | undefined;
 }) => {
   await auth.protect();
 
-  if (!orgId || !userId) {
+  if (!venueId || !userId) {
     return {
       success: false,
-      message: 'Organization ID or User ID is required',
+      message: 'Venue ID or User ID is required',
     };
   }
   const { success, message } = await adminCheck();
@@ -32,7 +31,7 @@ export const removeUserFromOrg = async ({
 
   try {
     await clerkClient.organizations.deleteOrganizationMembership({
-      organizationId: orgId,
+      organizationId: venueId,
       userId: userId,
     });
     return {

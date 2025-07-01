@@ -34,6 +34,7 @@ export function UserButton({
 }) {
   const { isLoaded, user } = useUser();
   const { userId, orgId } = useAuth();
+
   const { setActive, userMemberships } = useOrganizationList({
     userMemberships: {
       pageSize: 5,
@@ -121,7 +122,7 @@ export function UserButton({
           {userMemberships?.data?.map((membership) => (
             <Fragment key={membership.organization.id}>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel>Organization</DropdownMenuLabel>
+              <DropdownMenuLabel>Venue</DropdownMenuLabel>
               <DropdownMenuGroup>
                 <DropdownMenuItem
                   key={membership.organization.id}

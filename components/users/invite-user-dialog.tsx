@@ -44,6 +44,11 @@ export function InviteUserDialog() {
       return;
     }
 
+    if (invitations?.data?.length && invitations.data.length >= 5) {
+      toast.error('You have reached the maximum number of invitations');
+      return;
+    }
+
     toast.promise(inviteUser({ email: values.email, orgId: organization.id }), {
       loading: 'Sending invitation...',
       success: (data) => {
@@ -61,17 +66,17 @@ export function InviteUserDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button variant={'outline'}>
           <UserPlus2 />
           Invite User
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add User to Venue</DialogTitle>
+          <DialogTitle>Add User to Organization</DialogTitle>
           <DialogDescription>
-            Invite a user to join your venue. They will receive an email with a
-            link to join.
+            Invite a user to join your organization. They will receive an email
+            with a link to join.
           </DialogDescription>
         </DialogHeader>
 

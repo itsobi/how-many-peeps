@@ -8,32 +8,20 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import {
-  Menu,
-  Home,
-  Calculator,
-  Settings,
-  UsersRound,
-  Building2,
-} from 'lucide-react';
+import { Menu, Home, Calculator, Settings, UsersRound } from 'lucide-react';
 import SidebarLink from '../header/sidebar-link';
 import { useIsMobile } from '@/lib/hooks/use-mobile';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Button } from '../ui/button';
 import { UserButton } from '../user-button';
 import { useAuth } from '@clerk/nextjs';
-import { OrganizationHeadingSidebar } from './organization-heading-sidebar';
+import { VenueHeadingSidebar } from './venue-heading-sidebar';
 
 const sidebarItems = [
   {
     label: 'Home',
     icon: <Home className="w-4 h-4" />,
     href: '/home',
-  },
-  {
-    label: 'Venues',
-    icon: <Building2 className="w-4 h-4" />,
-    href: '/venues',
   },
 ];
 
@@ -55,7 +43,7 @@ const privateVenueItems = [
   },
 ];
 
-function OrganizationLinks({
+function VenueLinks({
   setOpen,
 }: {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -91,7 +79,7 @@ function OrganizationLinks({
   );
 }
 
-export function MobileOrganizationSidebar() {
+export function MobileVenueSidebar() {
   const [open, setOpen] = useState(false);
 
   const isMobile = useIsMobile();
@@ -116,7 +104,7 @@ export function MobileOrganizationSidebar() {
         <aside className="flex flex-col h-full">
           {/* Header */}
           <div className="border-b">
-            <OrganizationHeadingSidebar />
+            <VenueHeadingSidebar />
           </div>
 
           {/* Menu */}
@@ -132,7 +120,7 @@ export function MobileOrganizationSidebar() {
             ))}
           </div>
 
-          <OrganizationLinks setOpen={setOpen} />
+          <VenueLinks setOpen={setOpen} />
 
           <div className="mt-auto pb-4">
             <UserButton setOpen={setOpen} />
