@@ -99,6 +99,21 @@ export const handleClerkWebhook = httpAction(async (ctx, request) => {
         });
         console.log('--ORGANIZATION DELETED--');
         break;
+      case 'organizationMembership.created':
+        await ctx.runMutation(internal.venues.createVenueMembership, {
+          venueExternalId: event.data.organization.id,
+          userExternalId: event.data.public_user_data.user_id,
+          role: event.data.role,
+        });
+        console.log('--ORGANIZATION MEMBERSHIP CREATED--');
+        break;
+      case 'organizationMembership.deleted':
+        await ctx.runMutation(internal.venues.deleteVenueMembership, {
+          venueExternalId: event.data.organization.id,
+          userExternalId: event.data.public_user_data.user_id,
+        });
+        console.log('--ORGANIZATION MEMBERSHIP DELETED--');
+        break;
       default:
         console.log('Unhandled event type:', event.type);
         break;
