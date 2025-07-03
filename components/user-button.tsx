@@ -24,6 +24,8 @@ import Link from 'next/link';
 import { Dispatch, Fragment, SetStateAction } from 'react';
 import { SignOutButton } from './sign-out-button';
 import { CustomAlertDialog } from './custom-alert-dialog';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 export function UserButton({
   header,
@@ -40,6 +42,10 @@ export function UserButton({
       pageSize: 5,
       keepPreviousData: true,
     },
+  });
+
+  const venue = useQuery(api.venues.getVenueOnClient, {
+    externalUserId: userId ?? '',
   });
 
   const handleUserButtonClick = (
@@ -134,7 +140,7 @@ export function UserButton({
                   }
                   disabled={orgId === membership.organization.id}
                 >
-                  <ArrowLeftRight /> {membership.organization.name}{' '}
+                  <ArrowLeftRight /> {venue?.name}{' '}
                   {orgId === membership.organization.id && <Check />}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
@@ -215,7 +221,7 @@ export function UserButton({
                 disabled={orgId === membership.organization.id}
                 className="flex items-center"
               >
-                <ArrowLeftRight /> {membership.organization.name}{' '}
+                <ArrowLeftRight /> {venue?.name}{' '}
                 {orgId === membership.organization.id && (
                   <Check className="ml-auto" />
                 )}

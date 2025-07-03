@@ -58,12 +58,16 @@ export const getAllVenues = query({
 
 export const getVenue = query({
   args: {
-    externalId: v.string(),
+    externalId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    if (!args.externalId) {
+      return undefined;
+    }
+
     const venue = await ctx.db
       .query('venues')
-      .withIndex('by_external_id', (q) => q.eq('externalId', args.externalId))
+      .withIndex('by_external_id', (q) => q.eq('externalId', args.externalId!))
       .first();
 
     if (!venue) {
@@ -191,5 +195,82 @@ export const updateVenue = mutation({
         message: 'Failed to update organization',
       };
     }
+  },
+});
+
+export const createVenueMembership = internalMutation({
+  args: {
+    venueExternalId: v.string(),
+    userExternalId: v.string(),
+    role: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const venue = await ctx.db
+      .query('venues')
+      .withIndex('by_external_id', (q) =>
+        q.eq('externalId', args.venueExternalId)
+      )
+      .first();
+
+    if (!venue) {
+      throw new Error('Venue does not exist');
+    }
+
+    await ctx.db.patch(venue._id, {
+      members: {
+        [args.userExternalId]: {
+          role: args.role,
+        },
+      },
+    });
+  },
+});
+
+export const deleteVenueMembership = internalMutation({
+  args: {
+    venueExternalId: v.string(),
+    userExternalId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const venue = await ctx.db
+      .query('venues')
+      .withIndex('by_external_id', (q) =>
+        q.eq('externalId', args.venueExternalId)
+      )
+      .first();
+
+    if (!venue) {
+      throw new Error('Venue does not exist');
+    }
+
+    // This line uses object destructuring to:
+    // 1. Extract and remove the member with key userExternalId (stored in 'removed')
+    // 2. Keep all other members in the 'remainingMembers' object
+    // 3. Fallback to empty object if venue.members is undefined
+    const { [args.userExternalId]: removed, ...remainingMembers } =
+      venue.members || {};
+    await ctx.db.patch(venue._id, {
+      members: remainingMembers,
+    });
+  },
+});
+
+export const getVenueOnClient = query({
+  args: {
+    externalUserId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    if (!args.externalUserId) {
+      return null;
+    }
+
+    const venues = await ctx.db.query('venues').collect();
+    const venue = venues.find((v) => v.members?.[args.externalUserId]);
+
+    if (!venue) {
+      return null;
+    }
+
+    return venue;
   },
 });

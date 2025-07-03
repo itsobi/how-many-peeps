@@ -14,6 +14,14 @@ const usersTable = defineTable({
 const venuesTable = defineTable({
   externalId: v.string(),
   name: v.string(),
+  members: v.optional(
+    v.record(
+      v.string(),
+      v.object({
+        role: v.string(),
+      })
+    )
+  ),
   imageUrl: v.string(),
   city: v.optional(v.string()),
   state: v.optional(v.string()),

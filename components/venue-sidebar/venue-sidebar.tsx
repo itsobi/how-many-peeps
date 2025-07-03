@@ -1,8 +1,11 @@
+'use client';
+
 import { Calculator, Settings, UsersRound } from 'lucide-react';
 import SidebarLink from '../header/sidebar-link';
 import { UserButton } from '../user-button';
 import { auth } from '@clerk/nextjs/server';
 import { VenueHeadingSidebar } from './venue-heading-sidebar';
+import { useAuth } from '@clerk/nextjs';
 
 const privateVenueItems = [
   {
@@ -22,8 +25,8 @@ const privateVenueItems = [
   },
 ];
 
-export async function OrganizationSidebar() {
-  const { userId, orgId } = await auth();
+export function VenueSidebar() {
+  const { userId, orgId } = useAuth();
 
   if (!orgId) {
     return null;
@@ -34,7 +37,7 @@ export async function OrganizationSidebar() {
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="border-b">
-          <VenueHeadingSidebar orgId={orgId} />
+          <VenueHeadingSidebar userId={userId} />
         </div>
 
         {/* Menu */}

@@ -80,6 +80,7 @@ function VenueLinks({
 }
 
 export function MobileVenueSidebar() {
+  const { userId } = useAuth();
   const [open, setOpen] = useState(false);
 
   const isMobile = useIsMobile();
@@ -89,6 +90,10 @@ export function MobileVenueSidebar() {
       setOpen(false);
     }
   }, [isMobile]);
+
+  if (!userId) {
+    return null;
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -104,7 +109,7 @@ export function MobileVenueSidebar() {
         <aside className="flex flex-col h-full">
           {/* Header */}
           <div className="border-b">
-            <VenueHeadingSidebar />
+            <VenueHeadingSidebar userId={userId} />
           </div>
 
           {/* Menu */}

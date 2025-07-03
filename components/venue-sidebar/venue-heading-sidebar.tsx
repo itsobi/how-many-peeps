@@ -1,6 +1,5 @@
 'use client';
 
-import { useOrganization } from '@clerk/nextjs';
 import { Lock } from 'lucide-react';
 
 import Image from 'next/image';
@@ -9,12 +8,12 @@ import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
 interface Props {
-  orgId: string;
+  userId: string;
 }
 
-export function VenueHeadingSidebar({ orgId }: Props) {
-  const venue = useQuery(api.venues.getVenue, {
-    externalId: orgId,
+export function VenueHeadingSidebar({ userId }: Props) {
+  const venue = useQuery(api.venues.getVenueOnClient, {
+    externalUserId: userId,
   });
 
   if (!venue) {
