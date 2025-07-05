@@ -4,7 +4,7 @@ import { UsersView } from '@/components/views/users-view';
 export default function UsersPage() {
   return (
     <>
-      <PageHeading title="Users" description="Manage your users" />
+      <PageHeading title="Users" description="Manage users within your venue" />
       <UsersView />
     </>
   );

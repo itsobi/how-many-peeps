@@ -21,8 +21,8 @@ export default function SidebarLink({ href, icon, label, onClick }: Props) {
       href={href}
       key={label}
       className={cn(
-        'flex items-center gap-2 dark:text-text-dark hover:bg-[#f5f5f5] dark:hover:bg-[#404040] rounded-md p-2 transition-colors duration-200',
-        isActive && 'font-semibold bg-[#f5f5f5] dark:bg-[#404040]'
+        'flex items-center gap-2 dark:text-text-dark hover:bg-secondary rounded-md p-2 transition-colors duration-200',
+        isActive && 'font-semibold bg-secondary text-black'
       )}
     >
       {icon}

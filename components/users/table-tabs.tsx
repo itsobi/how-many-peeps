@@ -16,7 +16,7 @@ export function TableTabs() {
   const { isLoaded: isInvitationsLoaded, invitations } =
     useOrganization(OrgInvitationsParams);
   const { orgRole } = useAuth();
-  const isAdmin = orgRole === 'org:admin';
+  const isAdmin = orgRole === roleEnum.ADMIN;
 
   if (!isMembershipsLoaded || !isInvitationsLoaded) return <LoadingView />;
 

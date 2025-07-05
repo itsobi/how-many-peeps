@@ -123,10 +123,7 @@ export function Counter({ orgId }: Props) {
       <div className="flex justify-center py-8 text-center">
         <p className="text-xs text-muted-foreground">
           For any issues regarding the live counter, please visit{' '}
-          <Link
-            href="/counter/manual"
-            className="text-cyan-700 hover:underline"
-          >
+          <Link href="/counter/manual" className="text-primary hover:underline">
             here
           </Link>{' '}
           to update manually.

@@ -3,34 +3,39 @@
 import { useSignIn } from '@clerk/nextjs';
 import { GoogleLogo } from './google-logo';
 import { toast } from 'sonner';
+import { useTransition } from 'react';
 
 export default function GoogleSignIn({ buttonText }: { buttonText: string }) {
   const { signIn } = useSignIn();
+  const [isPending, startTransition] = useTransition();
 
-  const handleSignIn = async () => {
+  const handleSignIn = () => {
     if (!signIn) return;
-    const loadingToast = toast.loading('Signing in with Google...');
-    try {
-      await signIn.authenticateWithRedirect({
-        strategy: 'oauth_google',
-        redirectUrl: '/sign-in/sso-callback',
-        redirectUrlComplete: '/home',
-      });
-      toast.dismiss(loadingToast);
-    } catch (error) {
-      console.error(JSON.stringify(error, null, 2));
-      toast.error('Failed to sign in with Google');
-    } finally {
-      toast.dismiss(loadingToast);
-    }
+    toast.info('Signing in with Google...');
+    startTransition(async () => {
+      try {
+        await signIn.authenticateWithRedirect({
+          strategy: 'oauth_google',
+          redirectUrl: '/sign-in/sso-callback',
+          redirectUrlComplete: '/home',
+        });
+      } catch (error) {
+        console.error(JSON.stringify(error, null, 2));
+        toast.error('Failed to sign in with Google');
+      }
+    });
   };
+
   return (
     <button
       onClick={handleSignIn}
-      className="flex items-center gap-2 border rounded-full px-12 py-2 hover:bg-slate-100 cursor-pointer dark:hover:bg-muted-foreground transition-colors duration-300 ease-in-out"
+      className="flex items-center gap-2 border rounded-full px-12 py-2 bg-black text-white hover:bg-black/85 dark:hover:bg-black/40 cursor-pointer transition-colors duration-300 ease-in-out"
+      disabled={isPending}
     >
       <GoogleLogo />
-      <p className="text-xs lg:text-base">{buttonText}</p>
+      <p className="text-xs">
+        {isPending ? 'Verifying credentials...' : buttonText}
+      </p>
     </button>
   );
 }

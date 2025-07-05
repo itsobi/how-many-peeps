@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Logo from '../logo';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { useAuth } from '@clerk/nextjs';
 
 interface Props {
   userId: string;
@@ -15,8 +16,9 @@ export function VenueHeadingSidebar({ userId }: Props) {
   const venue = useQuery(api.venues.getVenueOnClient, {
     externalUserId: userId,
   });
+  const { orgId } = useAuth();
 
-  if (!venue) {
+  if (!venue || !orgId) {
     return (
       <div className="flex items-center justify-center py-2">
         <Logo />

@@ -1,7 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import ThemeToggle from './theme-toggle';
+import { ThemeToggle } from './theme-toggle';
 import Logo from '../logo';
 import { NavLinks } from './nav-links';
 import { UserButton } from '../user-button';
@@ -17,9 +16,7 @@ export function Header() {
         <MobileVenueSidebar />
 
         <div className="hidden md:flex items-center gap-2">
-          <Link href="/home">
-            <Logo />
-          </Link>
+          <Logo />
           <div className="h-4 border bg-slate-100 mr-4" />
           <div className="flex items-center gap-6">
             {navLinks.map((link) => (

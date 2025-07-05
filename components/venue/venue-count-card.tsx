@@ -45,7 +45,6 @@ export function VenueCountCard({ venue }: { venue: Venue }) {
         <Link
           href={`/venue/${venue.externalId}`}
           className={buttonVariants({
-            variant: 'outline',
             className: 'w-full lg:hidden ',
           })}
         >

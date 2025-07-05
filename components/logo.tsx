@@ -2,11 +2,15 @@
 
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Button } from './ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function Logo() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -18,8 +22,16 @@ export default function Logo() {
   }
 
   if (resolvedTheme === 'dark') {
-    return <Image src="/white-logo.svg" alt="logo" width={32} height={32} />;
+    return (
+      <Link href="/">
+        <Image src="/white-logo.svg" alt="logo" width={32} height={32} />
+      </Link>
+    );
   }
 
-  return <Image src="/logo.svg" alt="logo" width={32} height={32} />;
+  return (
+    <Link href="/">
+      <Image src="/logo.svg" alt="logo" width={32} height={32} />
+    </Link>
+  );
 }

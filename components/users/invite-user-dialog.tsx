@@ -73,10 +73,10 @@ export function InviteUserDialog() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add User to Organization</DialogTitle>
+          <DialogTitle>Add User to Venue</DialogTitle>
           <DialogDescription>
-            Invite a user to join your organization. They will receive an email
-            with a link to join.
+            Invite a user to join your venue. They will receive an email with a
+            link to join.
           </DialogDescription>
         </DialogHeader>
 

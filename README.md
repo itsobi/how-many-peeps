@@ -1,7 +1,6 @@
 ## TODO
 
 - Data charts behind paywall
-- Landing page
 
 ## Getting Started
 

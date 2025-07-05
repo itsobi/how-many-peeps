@@ -51,17 +51,32 @@ export function BasicInformationForm({ venue }: Props) {
   const form = useForm<z.infer<typeof venueBasicInformationSchema>>({
     resolver: zodResolver(venueBasicInformationSchema),
     defaultValues: {
-      name: venue?.name ?? '',
-      type: venue?.type ?? '',
-      city: venue?.city ?? '',
-      state: venue?.state ?? '',
-      address: venue?.address ?? '',
-      established: venue?.established ?? '',
-      website: venue?.website ?? '',
-      description: venue?.description ?? '',
+      name: '',
+      type: '',
+      city: '',
+      state: '',
+      address: '',
+      established: '',
+      website: '',
+      description: '',
       image: undefined,
     },
   });
+
+  useEffect(() => {
+    if (venue) {
+      form.reset({
+        name: venue.name,
+        type: venue.type,
+        city: venue.city,
+        state: venue.state,
+        address: venue.address,
+        established: venue.established,
+        website: venue.website,
+        description: venue.description,
+      });
+    }
+  }, [venue, form]);
 
   const updateVenueConvex = useMutation(api.venues.updateVenue);
 
@@ -203,7 +218,7 @@ export function BasicInformationForm({ venue }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Shangri-La" />
+                    <Input {...field} placeholder="Name" />
                   </FormControl>
 
                   <FormMessage />
@@ -246,7 +261,7 @@ export function BasicInformationForm({ venue }: Props) {
                 <FormItem>
                   <FormLabel>City</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Austin" />
+                    <Input {...field} placeholder="City" />
                   </FormControl>
 
                   <FormMessage />
@@ -289,10 +304,7 @@ export function BasicInformationForm({ venue }: Props) {
                 <FormItem>
                   <FormLabel>Address</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="123 Main St Austin, TX 78702"
-                    />
+                    <Input {...field} placeholder="Address" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -305,7 +317,7 @@ export function BasicInformationForm({ venue }: Props) {
                 <FormItem>
                   <FormLabel>Year Established</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" placeholder="2025" />
+                    <Input {...field} type="number" placeholder="Year" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -319,7 +331,7 @@ export function BasicInformationForm({ venue }: Props) {
               <FormItem>
                 <FormLabel>Website</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="https://www.shangri-la.com" />
+                  <Input {...field} placeholder="https://www.my-venue.com" />
                 </FormControl>
 
                 <FormMessage />
@@ -336,7 +348,7 @@ export function BasicInformationForm({ venue }: Props) {
                   <Textarea
                     {...field}
                     className="min-h-[100px]"
-                    placeholder="Shangri-La is a bar located in the historic East Austin neighborhood."
+                    placeholder="Description"
                   />
                 </FormControl>
 

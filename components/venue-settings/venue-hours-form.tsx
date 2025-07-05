@@ -22,6 +22,7 @@ import { api } from '@/convex/_generated/api';
 import { useAuth } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { roleEnum } from '@/lib/types';
+import { useEffect } from 'react';
 
 const daysOfWeek = [
   'Monday',
@@ -91,6 +92,12 @@ export function VenueHoursForm({ hours }: Props) {
       },
     },
   });
+
+  useEffect(() => {
+    if (hours) {
+      form.reset(hours);
+    }
+  }, [hours, form]);
 
   const updateVenueHours = useMutation(api.venues.updateVenue);
 
