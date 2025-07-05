@@ -58,16 +58,18 @@ export const getAllVenues = query({
 
 export const getVenue = query({
   args: {
-    externalId: v.optional(v.string()),
+    externalVenueId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    if (!args.externalId) {
+    if (!args.externalVenueId) {
       return undefined;
     }
 
     const venue = await ctx.db
       .query('venues')
-      .withIndex('by_external_id', (q) => q.eq('externalId', args.externalId!))
+      .withIndex('by_external_id', (q) =>
+        q.eq('externalId', args.externalVenueId!)
+      )
       .first();
 
     if (!venue) {

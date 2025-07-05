@@ -9,12 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { VenueHoursForm } from '../venue-settings/venue-hours-form';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { CounterForm } from '../venue-settings/counter-form';
 
 export function SettingsView() {
   const { isLoaded, userId, orgId } = useAuth();
 
   const venue = useQuery(api.venues.getVenue, {
-    externalId: orgId ?? '',
+    externalVenueId: orgId ?? '',
   });
 
   if (!orgId) {
@@ -40,12 +41,16 @@ export function SettingsView() {
         <TabsList className="mb-2">
           <TabsTrigger value="venue-info">Venue Information</TabsTrigger>
           <TabsTrigger value="hours">Hours</TabsTrigger>
+          <TabsTrigger value="counter">Counter</TabsTrigger>
         </TabsList>
         <TabsContent value="venue-info">
           <BasicInformationForm venue={venue} />
         </TabsContent>
         <TabsContent value="hours">
           <VenueHoursForm hours={venue?.hours} />
+        </TabsContent>
+        <TabsContent value="counter">
+          <CounterForm />
         </TabsContent>
       </Tabs>
     </div>

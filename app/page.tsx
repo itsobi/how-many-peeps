@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 import { PublicHeader } from '@/components/auth/public-header';
+import { useEffect } from 'react';
 
 const features = [
   {
@@ -40,9 +41,13 @@ const features = [
 export default function Home() {
   const { userId } = useAuth();
   const router = useRouter();
-  if (userId) {
-    return router.push('/home');
-  }
+
+  useEffect(() => {
+    if (userId) {
+      router.push('/home');
+    }
+  }, [userId, router]);
+
   return (
     <div className="h-screen overflow-y-auto">
       <PublicHeader />

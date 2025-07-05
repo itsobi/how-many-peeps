@@ -11,7 +11,7 @@ export default async function VenuePage({ params }: Props) {
   const { externalId } = await params;
 
   const preloadedVenue = await preloadQuery(api.venues.getVenue, {
-    externalId,
+    externalVenueId: externalId,
   });
 
   if (preloadedVenue._valueJSON === null) {
