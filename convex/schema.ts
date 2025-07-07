@@ -23,6 +23,7 @@ const venuesTable = defineTable({
     )
   ),
   imageUrl: v.string(),
+  timezone: v.string(),
   city: v.optional(v.string()),
   state: v.optional(v.string()),
   type: v.optional(v.string()),

@@ -21,6 +21,9 @@ export const createVenue = async (
     const newVenue = await clerkClient.organizations.createOrganization({
       name: values.name,
       createdBy: userId,
+      publicMetadata: {
+        timezone: values.timezone,
+      },
     });
     return {
       success: true,

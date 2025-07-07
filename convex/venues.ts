@@ -6,12 +6,14 @@ export const createVenue = internalMutation({
     externalId: v.string(),
     name: v.string(),
     imageUrl: v.string(),
+    timezone: v.string(),
   },
   handler: async (ctx, args) => {
     await ctx.db.insert('venues', {
       externalId: args.externalId,
       name: args.name,
       imageUrl: args.imageUrl,
+      timezone: args.timezone,
     });
   },
 });

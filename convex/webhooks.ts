@@ -75,6 +75,9 @@ export const handleClerkWebhook = httpAction(async (ctx, request) => {
           externalId: event.data.id,
           name: event.data.name,
           imageUrl: event.data.image_url || '',
+          timezone:
+            (event.data?.public_metadata?.timezone as string) ||
+            'America/New_York',
         });
         console.log('--ORGANIZATION CREATED--');
         break;

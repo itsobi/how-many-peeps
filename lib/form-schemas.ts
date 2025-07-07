@@ -9,6 +9,7 @@ export const requestAccessFormSchema = z.object({
 
 export const createVenueFormSchema = z.object({
   name: z.string().trim().min(1),
+  timezone: z.string().min(1, { message: 'Timezone is required' }),
 });
 
 export const venueBasicInformationSchema = z.object({
