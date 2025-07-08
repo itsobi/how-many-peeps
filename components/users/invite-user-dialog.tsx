@@ -66,7 +66,7 @@ export function InviteUserDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={'outline'}>
+        <Button>
           <UserPlus2 />
           Invite User
         </Button>

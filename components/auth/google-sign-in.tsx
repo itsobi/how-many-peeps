@@ -29,7 +29,7 @@ export default function GoogleSignIn({ buttonText }: { buttonText: string }) {
   return (
     <button
       onClick={handleSignIn}
-      className="flex items-center gap-2 border rounded-full px-12 py-2 bg-black text-white hover:bg-black/85 dark:hover:bg-black/40 cursor-pointer transition-colors duration-300 ease-in-out"
+      className="flex items-center gap-2 rounded-full px-12 py-2 bg-black text-white hover:bg-black/85 dark:hover:bg-black/40 cursor-pointer transition-colors duration-300 ease-in-out"
       disabled={isPending}
     >
       <GoogleLogo />

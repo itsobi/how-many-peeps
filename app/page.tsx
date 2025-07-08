@@ -1,8 +1,6 @@
 'use client';
 
 import { motion } from 'motion/react';
-import { ThemeToggle } from '@/components/header/theme-toggle';
-import Logo from '@/components/logo';
 import { buttonVariants } from '@/components/ui/button';
 import {
   Card,
@@ -82,7 +80,8 @@ export default function Home() {
               <Card className="h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    {feature.title} {feature.icon}
+                    {feature.title}{' '}
+                    <span className="text-primary">{feature.icon}</span>
                   </CardTitle>
                   <CardDescription>{feature.description}</CardDescription>
                 </CardHeader>

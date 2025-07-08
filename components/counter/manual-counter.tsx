@@ -45,8 +45,6 @@ export function ManualCounter() {
     venueId: orgId || '',
   });
 
-  console.log(venueCount);
-
   useEffect(() => {
     if (orgId) {
       form.setValue('count', venueCount?.count?.toString() || '');

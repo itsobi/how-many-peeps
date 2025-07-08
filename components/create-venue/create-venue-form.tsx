@@ -16,12 +16,19 @@ import {
 import { Input } from '@/components/ui/input';
 
 import { toast } from 'sonner';
-import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
-import { SetStateAction, Dispatch, useRef } from 'react';
+import { SetStateAction, Dispatch } from 'react';
 import { createVenueFormSchema } from '@/lib/form-schemas';
 import { createVenue } from '@/lib/actions/create-venue';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import {
+  Select,
+  SelectItem,
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import { TIMEZONES } from '@/lib/constants';
 
 export function CreateVenueForm({
   setOpen,
@@ -33,6 +40,7 @@ export function CreateVenueForm({
     resolver: zodResolver(createVenueFormSchema),
     defaultValues: {
       name: '',
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
   });
 
@@ -66,11 +74,38 @@ export function CreateVenueForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name*</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input placeholder="Name" {...field} autoComplete="off" />
               </FormControl>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="timezone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Timezone</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a timezone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TIMEZONES.map((timezone) => (
+                      <SelectItem key={timezone.value} value={timezone.value}>
+                        {timezone.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
             </FormItem>
           )}
         />

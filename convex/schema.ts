@@ -11,6 +11,7 @@ const usersTable = defineTable({
 })
   .index('by_external_id', ['externalId'])
   .index('by_email', ['email']);
+
 const venuesTable = defineTable({
   externalId: v.string(),
   name: v.string(),
@@ -31,6 +32,7 @@ const venuesTable = defineTable({
   description: v.optional(v.string()),
   website: v.optional(v.string()),
   established: v.optional(v.string()),
+  trackingTime: v.optional(v.string()),
   hours: v.optional(
     v.object({
       monday: v.object({
