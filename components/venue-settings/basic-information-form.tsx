@@ -120,7 +120,7 @@ export function BasicInformationForm({ venue }: Props) {
     // update organization name using convex
     const { image, ...venueValues } = values;
     const res = await updateVenueConvex({
-      externalId: orgId,
+      externalOrgId: orgId,
       ...venueValues,
     });
 

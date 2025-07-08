@@ -11,7 +11,6 @@ interface Props {
 
 export function Venue({ preloadedVenue }: Props) {
   const venue = usePreloadedQuery(preloadedVenue);
-  console.log(venue);
 
   return (
     <div className="space-y-8 text-sm">

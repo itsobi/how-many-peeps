@@ -107,7 +107,7 @@ export const updateVenueInternalConvex = internalMutation({
 
 export const updateVenue = mutation({
   args: {
-    externalId: v.string(),
+    externalOrgId: v.string(),
     name: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
     city: v.optional(v.string()),
@@ -117,6 +117,7 @@ export const updateVenue = mutation({
     website: v.optional(v.string()),
     description: v.optional(v.string()),
     established: v.optional(v.string()),
+    trackingTime: v.optional(v.string()),
     hours: v.optional(
       v.object({
         monday: v.object({
@@ -166,7 +167,9 @@ export const updateVenue = mutation({
 
     const venue = await ctx.db
       .query('venues')
-      .withIndex('by_external_id', (q) => q.eq('externalId', args.externalId))
+      .withIndex('by_external_id', (q) =>
+        q.eq('externalId', args.externalOrgId)
+      )
       .first();
 
     if (!venue) {
@@ -184,7 +187,8 @@ export const updateVenue = mutation({
     if (args.website !== undefined) updates.website = args.website;
     if (args.description !== undefined) updates.description = args.description;
     if (args.established !== undefined) updates.established = args.established;
-    if (args.hours !== undefined) updates.hours = args.hours;
+    if (args.trackingTime !== undefined)
+      updates.trackingTime = args.trackingTime;
 
     try {
       await ctx.db.patch(venue._id, updates);

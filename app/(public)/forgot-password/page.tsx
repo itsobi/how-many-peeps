@@ -18,7 +18,7 @@ export default async function ForgotPasswordPage() {
 
       <Link
         href={'/sign-in'}
-        className="mt-8 text-xs hover:underline underline-offset-4 text-muted-foreground"
+        className="mt-8 text-xs hover:underline text-primary"
       >
         Back to Sign In
       </Link>

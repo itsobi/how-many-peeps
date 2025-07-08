@@ -7,7 +7,7 @@ export default function ManualCounterPage() {
     <>
       <PageHeading
         title="Manual Counter"
-        description="Manually add your venue count"
+        description="Manually add your venue count."
       />
       <div className="flex justify-center items-center mt-40">
         <ManualCounter />

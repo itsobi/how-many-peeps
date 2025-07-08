@@ -50,7 +50,7 @@ export function SettingsView() {
           <VenueHoursForm hours={venue?.hours} />
         </TabsContent>
         <TabsContent value="counter">
-          <CounterForm />
+          <CounterForm trackingTime={venue?.trackingTime} />
         </TabsContent>
       </Tabs>
     </div>

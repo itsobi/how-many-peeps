@@ -12,7 +12,7 @@ export default function ManageAccountPage() {
     <>
       <PageHeading
         title="Manage Account"
-        description="Manage your account"
+        description="Manage your account."
         bottomMargin
       />
       <div className="flex justify-center items-center">

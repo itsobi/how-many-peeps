@@ -6,7 +6,7 @@ export default function HomePage() {
     <>
       <PageHeading
         title="Home"
-        description="Welcome, take a look around at the live number of patrons at numerous venues"
+        description="Welcome, take a look around at the live number of patrons at numerous venues."
         bottomMargin
       />
       <HomeView />
