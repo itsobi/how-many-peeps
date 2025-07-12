@@ -17,7 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem } from '../ui/form';
 import { toast } from 'sonner';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useOrganization } from '@clerk/nextjs';
 import { OrgInvitationsParams } from '@/lib/types';
 
@@ -31,6 +31,7 @@ export function InviteUserDialog() {
   const { isLoaded, organization, invitations } =
     useOrganization(OrgInvitationsParams);
   const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof addUserSchema>>({
     resolver: zodResolver(addUserSchema),
@@ -49,17 +50,33 @@ export function InviteUserDialog() {
       return;
     }
 
-    toast.promise(inviteUser({ email: values.email, orgId: organization.id }), {
-      loading: 'Sending invitation...',
-      success: (data) => {
+    // toast.promise(inviteUser({ email: values.email, orgId: organization.id }), {
+    //   loading: 'Sending invitation...',
+    //   success: (data) => {
+    //     setOpen(false);
+    //     form.reset();
+    //     invitations?.revalidate?.();
+    //     return data?.message;
+    //   },
+    //   error: (error) => {
+    //     return error.message;
+    //   },
+    // });
+
+    startTransition(async () => {
+      const response = await inviteUser({
+        email: values.email,
+        orgId: organization.id,
+      });
+
+      if (response.success) {
         setOpen(false);
         form.reset();
         invitations?.revalidate?.();
-        return data.message;
-      },
-      error: (error) => {
-        return error.message;
-      },
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
     });
   };
 
@@ -101,9 +118,13 @@ export function InviteUserDialog() {
             <Button
               type="submit"
               className="w-full"
-              disabled={!form.formState.isValid || form.formState.isSubmitting}
+              disabled={
+                !form.formState.isValid ||
+                form.formState.isSubmitting ||
+                isPending
+              }
             >
-              Send Invite
+              {isPending ? 'Sending...' : 'Send Invite'}
             </Button>
           </form>
         </Form>

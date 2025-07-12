@@ -1,5 +1,3 @@
-'use client';
-
 import { motion } from 'motion/react';
 import { buttonVariants } from '@/components/ui/button';
 import {
@@ -10,10 +8,9 @@ import {
 } from '@/components/ui/card';
 import { Activity, ChartLine, Users } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
 import { PublicHeader } from '@/components/auth/public-header';
-import { useEffect } from 'react';
+import { auth } from '@clerk/nextjs/server';
 
 const features = [
   {
@@ -36,15 +33,12 @@ const features = [
   },
 ];
 
-export default function Home() {
-  const { userId } = useAuth();
-  const router = useRouter();
+export default async function Home() {
+  const { userId } = await auth();
 
-  useEffect(() => {
-    if (userId) {
-      router.push('/home');
-    }
-  }, [userId, router]);
+  if (userId) {
+    return redirect('/home');
+  }
 
   return (
     <div className="h-screen overflow-y-auto">

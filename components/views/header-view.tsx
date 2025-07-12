@@ -1,12 +1,20 @@
+'use client';
+
 import { auth } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { Header } from '../header/header';
+import { useAuth } from '@clerk/nextjs';
+import { useEffect } from 'react';
 
-export async function HeaderView() {
-  const { userId } = await auth();
+export function HeaderView() {
+  // const { userId,  } = await auth();
+  const { userId, isLoaded } = useAuth();
+  const router = useRouter();
 
-  if (!userId) {
-    return redirect('/sign-in');
+  if (!userId && isLoaded) {
+    useEffect(() => {
+      router.replace('/sign-in');
+    }, []);
   }
   return <Header />;
 }

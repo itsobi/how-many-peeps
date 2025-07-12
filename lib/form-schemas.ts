@@ -88,3 +88,28 @@ export const operatingHoursSchema = z.object({
     close: z.string().min(1, { message: 'Closing time is required' }),
   }),
 });
+
+export const groupSizeSchema = z.object({
+  groupSize: z
+    .string()
+    .min(1, { message: 'Group size is required' })
+    .refine((val) => Number(val) >= 0, {
+      message: 'Group size must be at least 0',
+    }),
+});
+
+export const timeTrackingSchema = z.object({
+  trackingTime: z
+    .string()
+    .min(1, { message: 'Tracking time is required' })
+    .refine(
+      (val) => {
+        // Check if value matches HH:mm format
+        const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        return timeRegex.test(val);
+      },
+      {
+        message: 'Time must be in 24-hour format (HH:mm)',
+      }
+    ),
+});

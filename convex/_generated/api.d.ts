@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as crons from "../crons.js";
 import type * as crowdCounts from "../crowdCounts.js";
 import type * as http from "../http.js";
 import type * as users from "../users.js";
@@ -28,6 +29,7 @@ import type * as webhooks from "../webhooks.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  crons: typeof crons;
   crowdCounts: typeof crowdCounts;
   http: typeof http;
   users: typeof users;

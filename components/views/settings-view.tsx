@@ -9,7 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { VenueHoursForm } from '../venue-settings/venue-hours-form';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { CounterForm } from '../venue-settings/counter-form';
+import {
+  GroupSizeForm,
+  TimeTrackingForm,
+} from '../venue-settings/counter-forms';
 
 export function SettingsView() {
   const { isLoaded, userId, orgId } = useAuth();
@@ -18,7 +21,11 @@ export function SettingsView() {
     externalVenueId: orgId ?? '',
   });
 
-  if (!orgId) {
+  if (!isLoaded) {
+    return <LoadingView />;
+  }
+
+  if (isLoaded && !orgId) {
     if (!userId) {
       return redirect('/');
     }
@@ -29,10 +36,6 @@ export function SettingsView() {
         href="/home"
       />
     );
-  }
-
-  if (!isLoaded) {
-    return <LoadingView />;
   }
 
   return (
@@ -50,7 +53,10 @@ export function SettingsView() {
           <VenueHoursForm hours={venue?.hours} />
         </TabsContent>
         <TabsContent value="counter">
-          <CounterForm trackingTime={venue?.trackingTime} />
+          <div className="space-y-8">
+            <GroupSizeForm />
+            <TimeTrackingForm />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

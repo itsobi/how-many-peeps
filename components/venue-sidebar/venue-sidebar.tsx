@@ -26,9 +26,9 @@ const privateVenueItems = [
 ];
 
 export function VenueSidebar() {
-  const { userId, orgId } = useAuth();
+  const { userId, orgId, isLoaded } = useAuth();
 
-  if (!orgId) {
+  if (!orgId || !isLoaded) {
     return null;
   }
 

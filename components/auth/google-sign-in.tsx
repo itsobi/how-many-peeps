@@ -11,7 +11,7 @@ export default function GoogleSignIn({ buttonText }: { buttonText: string }) {
 
   const handleSignIn = () => {
     if (!signIn) return;
-    toast.info('Signing in with Google...');
+    toast.loading('Signing in with Google...');
     startTransition(async () => {
       try {
         await signIn.authenticateWithRedirect({
@@ -33,9 +33,7 @@ export default function GoogleSignIn({ buttonText }: { buttonText: string }) {
       disabled={isPending}
     >
       <GoogleLogo />
-      <p className="text-xs">
-        {isPending ? 'Verifying credentials...' : buttonText}
-      </p>
+      <p className="text-xs">{buttonText}</p>
     </button>
   );
 }

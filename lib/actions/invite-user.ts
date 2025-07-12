@@ -21,6 +21,18 @@ export const inviteUser = async ({
     };
   }
 
+  const organizationMembers =
+    await clerkClient.organizations.getOrganizationMembershipList({
+      organizationId: orgId,
+      emailAddress: [email],
+    });
+
+  if (organizationMembers.totalCount > 0) {
+    return {
+      success: false,
+      message: 'Sorry, this user is already a member of this organization',
+    };
+  }
   try {
     await clerkClient.organizations.createOrganizationInvitation({
       organizationId: orgId,

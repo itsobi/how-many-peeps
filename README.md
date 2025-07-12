@@ -1,5 +1,6 @@
 ## TODO
 
+- update reset counter based on venue time based tracking value
 - Data charts behind paywall
 
 ## Getting Started

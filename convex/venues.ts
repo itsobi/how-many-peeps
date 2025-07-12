@@ -268,10 +268,6 @@ export const getVenueOnClient = query({
     externalUserId: v.string(),
   },
   handler: async (ctx, args) => {
-    if (!args.externalUserId) {
-      return null;
-    }
-
     const venues = await ctx.db.query('venues').collect();
     const venue = venues.find((v) => v.members?.[args.externalUserId]);
 

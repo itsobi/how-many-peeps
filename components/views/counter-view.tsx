@@ -9,7 +9,11 @@ import { LoadingView } from '../loading-view';
 export function CounterView() {
   const { isLoaded, userId, orgId } = useAuth();
 
-  if (!orgId) {
+  if (!isLoaded) {
+    return <LoadingView />;
+  }
+
+  if (isLoaded && !orgId) {
     if (!userId) {
       return redirect('/');
     }
@@ -20,10 +24,6 @@ export function CounterView() {
         href="/home"
       />
     );
-  }
-
-  if (!isLoaded) {
-    return <LoadingView />;
   }
 
   return (

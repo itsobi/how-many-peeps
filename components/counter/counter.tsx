@@ -14,11 +14,10 @@ interface Props {
 }
 
 export function Counter({ orgId }: Props) {
-  const crowdCount = useQuery(api.crowdCounts.getCrowdCount, {
-    venueId: orgId,
+  const venue = useQuery(api.venues.getVenue, {
+    externalVenueId: orgId,
   });
-
-  const groupSize = useQuery(api.crowdCounts.getGroupSize, {
+  const data = useQuery(api.crowdCounts.getCrowdCountAndGroupSize, {
     venueId: orgId,
   });
 
@@ -36,6 +35,7 @@ export function Counter({ orgId }: Props) {
     startCrowdCountTransition(async () => {
       const response = await updateOrgCrowdCount({
         venueId: orgId,
+        timezone: venue?.timezone ?? 'America/New_York',
         count,
       });
       if (!response.success) {
@@ -56,7 +56,7 @@ export function Counter({ orgId }: Props) {
         <p className="text-sm">LIVE COUNT</p>
       </div>
 
-      <h2 className="text-9xl font-semibold">{crowdCount?.count ?? 0}</h2>
+      <h2 className="text-9xl font-semibold">{data?.crowdCount ?? 0}</h2>
 
       {/* Controls */}
       <div className="flex flex-col w-full gap-4 text-sm text-muted-foreground">
@@ -65,13 +65,15 @@ export function Counter({ orgId }: Props) {
         <div className="flex items-center justify-between gap-4">
           <button
             onClick={() => {
-              if (!crowdCount || crowdCount.count === 0) {
+              if (!data?.crowdCount || data?.crowdCount === 0) {
                 return;
               }
-              handleUpdateCrowdCount(crowdCount.count - 1);
+              handleUpdateCrowdCount(data?.crowdCount - 1);
             }}
             disabled={
-              !crowdCount || crowdCount.count === 0 || updateCrowdCountIsPending
+              !data?.crowdCount ||
+              data.crowdCount === 0 ||
+              updateCrowdCountIsPending
             }
             className="cursor-pointer rounded p-6 w-full flex flex-col items-center gap-2 hover:bg-red-500 hover:text-white transition-all duration-300 ease-in-out shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-background disabled:hover:text-muted-foreground"
           >
@@ -79,7 +81,7 @@ export function Counter({ orgId }: Props) {
             Exit
           </button>
           <button
-            onClick={() => handleUpdateCrowdCount((crowdCount?.count ?? 0) + 1)}
+            onClick={() => handleUpdateCrowdCount((data?.crowdCount ?? 0) + 1)}
             disabled={updateCrowdCountIsPending}
             className="cursor-pointer rounded p-6 w-full flex flex-col items-center gap-2 hover:bg-green-500 hover:text-white transition-colors duration-300 ease-in-out shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-background disabled:hover:text-muted-foreground"
           >
@@ -91,30 +93,34 @@ export function Counter({ orgId }: Props) {
           <button
             onClick={() =>
               handleUpdateCrowdCount(
-                (crowdCount?.count ?? 0) - (groupSize ?? 0)
+                (data?.crowdCount ?? 0) - (data?.groupSize ?? 0)
               )
             }
             disabled={
-              !groupSize ||
-              groupSize === 0 ||
-              crowdCount?.count === 0 ||
+              !data?.groupSize ||
+              data?.groupSize === 0 ||
+              data?.crowdCount === 0 ||
               updateGroupSizeIsPending
             }
             className="cursor-pointer rounded p-6 w-full flex flex-col items-center gap-2 hover:bg-red-500 hover:text-white transition-colors duration-300 ease-in-out shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-background disabled:hover:text-muted-foreground"
           >
-            <span className="text-lg">-{groupSize ?? 0}</span>
+            <span className="text-lg">-{data?.groupSize ?? 0}</span>
             <span>Group Exit</span>
           </button>
           <button
             onClick={() =>
               handleUpdateCrowdCount(
-                (crowdCount?.count ?? 0) + (groupSize ?? 0)
+                (data?.crowdCount ?? 0) + (data?.groupSize ?? 0)
               )
             }
-            disabled={!groupSize || groupSize === 0 || updateGroupSizeIsPending}
+            disabled={
+              !data?.groupSize ||
+              data?.groupSize === 0 ||
+              updateGroupSizeIsPending
+            }
             className="cursor-pointer rounded p-6 w-full flex flex-col items-center gap-2 hover:bg-green-500 hover:text-white transition-colors duration-300 ease-in-out shadow disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-background disabled:hover:text-muted-foreground"
           >
-            <span className="text-lg">+{groupSize ?? 0}</span>
+            <span className="text-lg">+{data?.groupSize ?? 0}</span>
             <span>Group Enter</span>
           </button>
         </div>

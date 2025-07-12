@@ -113,7 +113,7 @@ export function VenueHoursForm({ hours }: Props) {
     }
 
     const res = await updateVenueHours({
-      externalId: orgId,
+      externalOrgId: orgId,
       hours: values,
     });
 

@@ -9,7 +9,11 @@ import { LoadingView } from '../loading-view';
 export function UsersView() {
   const { isLoaded, userId, orgId } = useAuth();
 
-  if (!orgId) {
+  if (!isLoaded) {
+    return <LoadingView />;
+  }
+
+  if (isLoaded && !orgId) {
     if (!userId) {
       return redirect('/');
     }
@@ -21,10 +25,5 @@ export function UsersView() {
       />
     );
   }
-
-  if (!isLoaded) {
-    return <LoadingView />;
-  }
-
   return <TableTabs />;
 }

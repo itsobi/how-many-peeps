@@ -78,6 +78,8 @@ const crowdCountsTable = defineTable({
   externalVenueId: v.string(),
   count: v.number(),
   groupSize: v.number(),
+  timezone: v.string(),
+  lastResetDate: v.optional(v.string()),
 }).index('by_external_venue_id', ['externalVenueId']);
 
 const dailyCrowdCountsTable = defineTable({
